@@ -1,0 +1,168 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Network reliability fixture</title>
+    <link rel="icon" href="data:," />
+    <style>
+      :root {
+        --ink: #16181d;
+        --accent: #1d4ed8;
+      }
+      body {
+        margin: 0;
+        padding: 32px;
+        font-family: system-ui, -apple-system, "Segoe UI", sans-serif;
+        line-height: 1.5;
+        color: var(--ink);
+        background: #ffffff;
+      }
+      button {
+        font: inherit;
+        padding: 6px 12px;
+        margin-right: 8px;
+      }
+      :focus-visible {
+        outline: 3px solid #b45309;
+        outline-offset: 2px;
+      }
+      [hidden] {
+        display: none !important;
+      }
+    </style>
+  </head>
+  <body>
+    <!--
+      Fixture for the network reliability regression suite.
+
+      Nothing here fails on load: every request is dispatched by the scenario
+      named in the `case` query parameter, when the "Run scenario" button is
+      clicked. That keeps each scenario reproducible from its URL alone, which
+      is what the test file needs to compare one behaviour against another.
+    -->
+    <main>
+      <h1>Network reliability fixture</h1>
+
+      <p>
+        This page is driven by its query string: <code>?case=…</code> selects the
+        behaviour and <code>&amp;failAt=…</code> sets the delay in milliseconds.
+      </p>
+
+      <button type="button" data-action="go">Run scenario</button>
+      <button type="button" data-action="toggle" aria-expanded="false">Show detail</button>
+
+      <p data-region="detail" hidden>Detail region revealed by a healthy interaction.</p>
+    </main>
+
+    <script type="module">
+      const params = new URLSearchParams(location.search);
+      const scenario = params.get('case') ?? 'none';
+      const failAt = Number(params.get('failAt') ?? 60);
+
+      const go = document.querySelector('[data-action="go"]');
+      const toggle = document.querySelector('[data-action="toggle"]');
+
+      toggle.addEventListener('click', () => {
+        const region = document.querySelector('[data-region="detail"]');
+        region.hidden = !region.hidden;
+        toggle.setAttribute('aria-expanded', String(!region.hidden));
+      });
+
+      const scenarios = {
+        // A successful fetch whose body is deliberately never read. Chromium
+        // emits no `requestfinished` for it, which is F-01.
+        unconsumed() {
+          fetch('/ok?unconsumed=1');
+        },
+        // The same request with the body consumed: the control case.
+        consumed() {
+          fetch('/ok?consumed=1').then((response) => response.text());
+        },
+        missing() {
+          fetch('/missing?case=missing').catch(() => {});
+        },
+        error() {
+          fetch('/error?case=error').catch(() => {});
+        },
+        transport() {
+          // Port 1 on loopback refuses the connection: a real transport
+          // failure, not a cancelled request.
+          fetch('http://127.0.0.1:1/nothing').catch(() => {});
+        },
+        redirect() {
+          fetch('/redirect-missing').catch(() => {});
+        },
+        // F-03: a failure dispatched `failAt` ms after the interaction.
+        delayed() {
+          setTimeout(() => {
+            fetch('/missing?case=delayed').catch(() => {});
+          }, failAt);
+        },
+        // The same delay, but the request succeeds: proves the window observes
+        // a request it cannot see a failure in.
+        delayedSuccess() {
+          setTimeout(() => {
+            fetch('/ok?case=delayed-success').catch(() => {});
+          }, failAt);
+        },
+        // F-02: a request that is still in flight when the document reloads.
+        reload() {
+          fetch('/slow?ms=1500&case=reload').catch(() => {});
+        },
+        // F-02: the page itself navigates away mid-request.
+        reloadSelf() {
+          fetch('/slow?ms=1500&case=reload-self').catch(() => {});
+          setTimeout(() => location.reload(), 120);
+        },
+        navigate() {
+          fetch('/slow?ms=1500&case=navigate').catch(() => {});
+          setTimeout(() => {
+            location.href = '/other.html';
+          }, 80);
+        },
+        // F-03: one request inside the window (slow, keeps the observation
+        // phase open) and one after it has closed.
+        outside() {
+          fetch('/slow?ms=1200&case=outside-inside').catch(() => {});
+          setTimeout(() => {
+            fetch('/ok?case=outside').catch(() => {});
+          }, 600);
+        },
+        // F-04: a connection that never produces a response.
+        pending() {
+          fetch('/hang?case=pending').catch(() => {});
+        },
+        ignoredPending() {
+          fetch('/hang?case=pending&ignore-me=1').catch(() => {});
+        },
+        pendingAndMissing() {
+          fetch('/hang?case=pending&ignore-me=1').catch(() => {});
+          fetch('/missing?case=alongside').catch(() => {});
+        },
+        multi() {
+          fetch('/ok?case=a').catch(() => {});
+          fetch('/ok?case=b').catch(() => {});
+          fetch('/missing?case=multi-a').catch(() => {});
+          fetch('/error?case=multi-b').catch(() => {});
+        },
+        duplicate() {
+          fetch('/missing?case=same').catch(() => {});
+          fetch('/missing?case=same').catch(() => {});
+        },
+      };
+
+      if (params.get('frame') === '1') {
+        const frame = document.createElement('iframe');
+        frame.src = '/tests/fixtures/network/frame.html';
+        frame.title = 'Network fixture frame';
+        frame.style.cssText = 'width:240px;height:64px;border:0';
+        document.querySelector('main').appendChild(frame);
+      }
+
+      go.addEventListener('click', () => {
+        (scenarios[scenario] ?? (() => {}))();
+      });
+    </script>
+  </body>
+</html>

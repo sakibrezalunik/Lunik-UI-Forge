@@ -1,0 +1,72 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Interaction errors fixture</title>
+    <style>
+      body {
+        margin: 0;
+        padding: 32px;
+        font-family: system-ui, sans-serif;
+        line-height: 1.5;
+      }
+      button {
+        font: inherit;
+        margin-right: 8px;
+        padding: 6px 12px;
+      }
+    </style>
+  </head>
+  <body>
+    <!--
+      Fixture for M-4. Loading this page is clean: no console error and no failed
+      request. The failures below only happen when the configured interaction
+      clicks the button, so a verifier that evaluates console/network at load
+      time reports a false pass.
+    -->
+    <main>
+      <h1>Interaction errors fixture</h1>
+
+      <p>
+        This page loads without errors. Clicking the first button logs an error and
+        requests a file that does not exist.
+      </p>
+
+      <button type="button" data-action="explode">Trigger interaction failure</button>
+      <button type="button" data-action="explode-later">Trigger a delayed failure</button>
+      <button type="button" data-action="toggle" aria-expanded="false">Show detail</button>
+
+      <!--
+        Some interactions dispatch their request a moment later (a debounce, an
+        animation frame, a queued task). The click step finishes before the
+        request exists, so a runner that evaluates the network check as soon as
+        the last step returns records a false pass.
+      -->
+
+      <p id="detail" hidden>Detail region revealed by a healthy interaction.</p>
+    </main>
+
+    <script type="module">
+      document.querySelector('[data-action="explode"]').addEventListener('click', () => {
+        console.error('deliberate console error from an interaction');
+        // Same origin, so the static server answers with 404: a real network
+        // failure rather than a refused connection.
+        fetch('/tests/fixtures/does-not-exist.json').catch(() => {});
+      });
+
+      document.querySelector('[data-action="explode-later"]').addEventListener('click', () => {
+        setTimeout(() => {
+          fetch('/tests/fixtures/does-not-exist-later.json').catch(() => {});
+        }, 60);
+      });
+
+      const toggle = document.querySelector('[data-action="toggle"]');
+      toggle.addEventListener('click', () => {
+        document.getElementById('detail').hidden = false;
+        toggle.textContent = 'Hide detail';
+        toggle.setAttribute('aria-expanded', 'true');
+      });
+    </script>
+  </body>
+</html>

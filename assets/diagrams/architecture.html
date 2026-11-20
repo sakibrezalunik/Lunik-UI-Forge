@@ -1,0 +1,186 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Lunik UI Forge — architecture</title>
+<style>
+  :root {
+    --bg: #0b111d; --ink: #e9eef6; --muted: #93a1b7;
+    --line: #2b3648; --node: #121a2a; --node-line: #3a465c;
+    --violet: #8b7cff; --cyan: #46d7c9; --amber: #ffbe6b; --green: #67e8a5;
+    --mono: "Cascadia Mono", "Consolas", monospace;
+  }
+  * { box-sizing: border-box; }
+  html, body { margin: 0; width: 980px; height: 1000px; overflow: hidden; }
+  body {
+    position: relative; background: var(--bg); color: var(--ink);
+    font-family: "Segoe UI", system-ui, sans-serif; -webkit-font-smoothing: antialiased;
+  }
+  body::before {
+    content: ""; position: absolute; inset: 0;
+    background-image:
+      linear-gradient(to right, rgba(255,255,255,0.03) 1px, transparent 1px),
+      linear-gradient(to bottom, rgba(255,255,255,0.03) 1px, transparent 1px);
+    background-size: 40px 40px;
+    mask-image: radial-gradient(760px 720px at 50% 42%, #000 25%, transparent 92%);
+  }
+  .head { position: absolute; left: 40px; top: 24px; }
+  .head .k { font-family: var(--mono); font-size: 10px; letter-spacing: 0.22em; color: var(--cyan); text-transform: uppercase; }
+  .head h1 { margin: 7px 0 0; font-family: "Bahnschrift", "Segoe UI", sans-serif; font-size: 23px; font-weight: 600; letter-spacing: -0.01em; }
+  .head p { margin: 5px 0 0; font-size: 12px; color: var(--muted); }
+
+  .band { position: absolute; border: 1px dashed var(--line); border-radius: 12px; background: rgba(9,14,22,0.5); }
+  .band-label { position: absolute; top: 8px; left: 18px; padding: 0; background: transparent; font-family: var(--mono); font-size: 9.5px; letter-spacing: 0.16em; text-transform: uppercase; color: #7f8ea6; }
+
+  .node { position: absolute; z-index: 2; border-radius: 10px; border: 1px solid var(--node-line); background: var(--node); padding: 11px 13px; box-shadow: 0 10px 24px rgba(0,0,0,0.25); }
+  .node .t { font-size: 14.5px; font-weight: 600; letter-spacing: -0.005em; }
+  .node .p { margin-top: 4px; font-family: var(--mono); font-size: 9.5px; letter-spacing: 0.015em; color: #8fa1b9; line-height: 1.45; }
+  .node .d { margin-top: 4px; font-size: 11px; line-height: 1.4; color: #9dabc0; }
+  .node.cli { border-color: #6d5bd0; background: #171329; }
+  .node.cli .t { color: #e9e3ff; }
+  .node.check { border-color: #2f5a6f; background: #101c26; }
+  .node.check .t { color: #d9f1f7; }
+  .node.gate { border-color: #8a6a33; background: #1e1a12; }
+  .node.gate .t { color: #f4e3c4; }
+  .node.out { border-color: #2f6f63; background: #0f1f1c; }
+  .node.out .t { color: #d7f5ee; }
+  .node.target { border-color: #4a566c; background: #161b24; }
+  .node.target .t { color: #dfe6ef; }
+
+  svg.wires { position: absolute; inset: 0; z-index: 1; }
+  .wire { fill: none; stroke: #61718a; stroke-width: 1.4; }
+  .wire.dash { stroke-dasharray: 4 4; }
+  .wire.amber { stroke: #8a6a33; }
+  .wire.green { stroke: #2f6f63; }
+
+  .foot { position: absolute; left: 40px; right: 40px; bottom: 18px; display: flex; justify-content: space-between; align-items: center; font-family: var(--mono); font-size: 9px; letter-spacing: 0.07em; color: #5c6a80; }
+  .foot b { color: #9dabc0; font-weight: 500; }
+  .legend { display: flex; gap: 14px; }
+  .legend span { display: flex; align-items: center; gap: 6px; }
+  .legend i { width: 8px; height: 8px; border-radius: 2px; display: block; }
+</style>
+</head>
+<body>
+  <div class="head">
+    <div class="k">Architecture</div>
+    <h1>A small, inspectable verification engine</h1>
+    <p>Plain ESM, no build step. Playwright, pngjs and pixelmatch are the only runtime dependencies.</p>
+  </div>
+
+  <div class="band" style="left:30px; top:100px; width:460px; height:500px;">
+    <div class="band-label">Verification path · read-only</div>
+  </div>
+  <div class="band" style="left:520px; top:100px; width:430px; height:500px; border-color:#4a3b22;">
+    <div class="band-label" style="color:#a98a55;">Baseline gate · human write path</div>
+  </div>
+  <div class="band" style="left:30px; top:630px; width:920px; height:200px;">
+    <div class="band-label">Reports and evidence</div>
+  </div>
+  <div class="band" style="left:30px; top:850px; width:920px; height:118px;">
+    <div class="band-label">Example applications</div>
+  </div>
+
+  <svg class="wires" width="980" height="1000" aria-hidden="true">
+    <defs>
+      <marker id="a" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+        <path d="M 0 0 L 10 5 L 0 10 z" fill="#61718a"/>
+      </marker>
+      <marker id="aa" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+        <path d="M 0 0 L 10 5 L 0 10 z" fill="#8a6a33"/>
+      </marker>
+      <marker id="ag" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+        <path d="M 0 0 L 10 5 L 0 10 z" fill="#2f6f63"/>
+      </marker>
+    </defs>
+    <!-- verification path -->
+    <path class="wire" marker-end="url(#a)" d="M260 218 V235"/>
+    <path class="wire" marker-end="url(#a)" d="M260 315 V335"/>
+    <path class="wire" marker-end="url(#a)" d="M260 430 V455"/>
+    <!-- checks into baseline gate -->
+    <path class="wire" marker-end="url(#a)" d="M465 505 H500 V290 H545"/>
+    <!-- approval chain -->
+    <path class="wire amber" marker-end="url(#aa)" d="M735 218 V235"/>
+    <path class="wire amber" marker-end="url(#aa)" d="M735 335 V355"/>
+    <path class="wire amber" marker-end="url(#aa)" d="M735 455 V478"/>
+    <!-- baseline to evidence -->
+    <path class="wire green" marker-end="url(#ag)" d="M735 538 V670"/>
+    <!-- report to severity -->
+    <path class="wire" marker-end="url(#a)" d="M345 715 H420"/>
+  </svg>
+
+  <div class="node cli" style="left:55px; top:140px; width:410px; height:78px;">
+    <div class="t">Entry points</div>
+    <div class="p">tools/visual-verify.js — verify and --plan</div>
+    <div class="p">tools/serve.js — manual preview at 127.0.0.1:4173</div>
+  </div>
+  <div class="node" style="left:55px; top:235px; width:410px; height:80px;">
+    <div class="t">Configuration</div>
+    <div class="p">lunik.config.json → lib/config.js + lib/args.js</div>
+    <div class="d">Defaults, validation, and CLI options — resolved before a browser opens.</div>
+  </div>
+  <div class="node" style="left:55px; top:335px; width:410px; height:95px;">
+    <div class="t">Verification engine</div>
+    <div class="p">lib/runner.js · lib/server.js · lib/browser.js</div>
+    <div class="d">One fresh Chromium context per page × viewport; the page is served over real HTTP. Both examples are served by this runner.</div>
+  </div>
+  <div class="node check" style="left:55px; top:455px; width:410px; height:105px;">
+    <div class="t">Checks — lib/checks/*.js</div>
+    <div class="p">console · network · overflow · a11y names · labels</div>
+    <div class="p">contrast · links · elements · interactions · visual</div>
+  </div>
+
+  <div class="node cli" style="left:545px; top:140px; width:380px; height:78px;">
+    <div class="t">tools/approve-baseline.js</div>
+    <div class="p">the only writer of baselines/</div>
+    <div class="d">One page and one viewport per invocation.</div>
+  </div>
+  <div class="node gate" style="left:545px; top:235px; width:380px; height:100px;">
+    <div class="t">Approval transaction + lock</div>
+    <div class="p">lib/approval-transaction.js · lib/approval-lock.js</div>
+    <div class="d">Journal, staged bytes, per-file atomic replacement, verified rollback.</div>
+  </div>
+  <div class="node gate" style="left:545px; top:355px; width:380px; height:100px;">
+    <div class="t">Baseline + diff</div>
+    <div class="p">lib/baseline.js · lib/diff.js</div>
+    <div class="d">Manifest with SHA-256 and browser version; pngjs + pixelmatch comparison.</div>
+  </div>
+  <div class="node gate" style="left:545px; top:478px; width:380px; height:60px;">
+    <div class="t">--run · --approve-hash · --confirm</div>
+    <div class="p">no bulk mode · no automatic approval</div>
+  </div>
+
+  <div class="node out" style="left:55px; top:670px; width:290px; height:110px;">
+    <div class="t">Report</div>
+    <div class="p">lib/report.js</div>
+    <div class="d">report.json (schemaVersion 1) · report.md · latest.* · screenshots · diffs</div>
+  </div>
+  <div class="node out" style="left:420px; top:670px; width:250px; height:110px;">
+    <div class="t">Exit code</div>
+    <div class="p">lib/severity.js</div>
+    <div class="d">0 pass · 1 fail<br>2 config · 3 could not run</div>
+  </div>
+  <div class="node out" style="left:735px; top:670px; width:190px; height:110px;">
+    <div class="t">Baselines</div>
+    <div class="p">baselines/</div>
+    <div class="d">approved images + manifest</div>
+  </div>
+
+  <div class="node target" style="left:55px; top:887px; width:420px; height:62px;">
+    <div class="t">Northwind — examples/saas-dashboard</div>
+    <div class="p">revenue dashboard · light theme</div>
+  </div>
+  <div class="node target" style="left:505px; top:887px; width:420px; height:62px;">
+    <div class="t">Sentinel — examples/cybersecurity-dashboard</div>
+    <div class="p">security operations · dark theme</div>
+  </div>
+
+  <div class="foot">
+    <span><b>playwright</b> · <b>pngjs</b> · <b>pixelmatch</b> — no framework, no build step</span>
+    <span class="legend">
+      <span><i style="background:#6d5bd0;"></i>CLI</span>
+      <span><i style="background:#8a6a33;"></i>human gate</span>
+      <span><i style="background:#2f6f63;"></i>evidence</span>
+    </span>
+  </div>
+</body>
+</html>

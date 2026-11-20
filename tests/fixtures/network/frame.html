@@ -1,0 +1,25 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <title>Network fixture frame</title>
+    <link rel="icon" href="data:," />
+    <style>
+      body {
+        margin: 0;
+        padding: 8px;
+        font-family: system-ui, sans-serif;
+        color: #16181d;
+        background: #ffffff;
+      }
+    </style>
+  </head>
+  <body>
+    <!--
+      A same-origin iframe whose request fails. The parent page loads cleanly, so
+      a collector that only watches the main frame reports a false pass here.
+    -->
+    <p>Frame with one broken image.</p>
+    <img src="/missing-image.png" alt="Missing image probe" width="16" height="16" />
+  </body>
+</html>

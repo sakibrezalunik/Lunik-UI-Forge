@@ -1,0 +1,57 @@
+# Dependencies
+node_modules/
+
+# Generated verification output — never committed
+reports/
+
+# Internal phase reports, captures, previews and other review evidence
+review/
+
+# Approved visual baselines and approval records — keep the policy README only
+baselines/**
+!baselines/README.md
+
+# Scratch space used by the test suite
+tests/.tmp-test/
+
+# Temporary files and caches
+*.tmp
+.cache/
+coverage/
+
+# Secrets and local credentials
+.env
+.env.*
+!.env.example
+!.env.sample
+!.env.template
+*.pem
+*.key
+*.p12
+*.pfx
+*.jks
+*.keystore
+id_rsa*
+id_ed25519*
+.npmrc
+.netrc
+secrets/
+.credentials/
+
+# Editor / OS noise
+.DS_Store
+Thumbs.db
+.idea/
+.vscode/*
+!.vscode/extensions.json
+
+# Logs
+*.log
+npm-debug.log*
+
+# Local overrides (machine-specific, may contain absolute paths)
+lunik.config.local.json
+
+# Playwright artifacts that escape reports/
+test-results/
+playwright-report/

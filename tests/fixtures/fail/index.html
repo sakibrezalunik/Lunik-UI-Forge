@@ -1,0 +1,63 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Fixture · deliberately broken page</title>
+    <link rel="icon" href="data:," />
+    <link rel="stylesheet" href="/tests/fixtures/fail/missing-stylesheet.css" />
+    <style>
+      body { margin: 0; font-family: system-ui, sans-serif; background: #fff; line-height: 1.5; }
+      .wide { width: 2000px; height: 40px; background: #dbeafe; }
+      .faint { color: #b9b9b9; background: #ffffff; }
+      .present { padding: 1rem; }
+    </style>
+  </head>
+  <body>
+    <!-- Every defect below is intentional. This page exists to prove the checks fire. -->
+
+    <!-- 1. Horizontal overflow: fixed 2000px box inside a 100% body. -->
+    <div class="wide">This box is far wider than any viewport.</div>
+
+    <main class="present">
+      <h1>Deliberately broken fixture</h1>
+
+      <!-- 2. Low contrast text (#b9b9b9 on #ffffff ≈ 1.9:1). -->
+      <p class="faint">This paragraph is too faint to read comfortably.</p>
+
+      <!-- 3. Unlabelled text input. -->
+      <p><input type="text" name="unlabelled" placeholder="Type here" /></p>
+
+      <!-- 4. Icon-only button with no accessible name. -->
+      <p>
+        <button type="button">
+          <svg width="16" height="16" viewBox="0 0 16 16" aria-hidden="true" focusable="false">
+            <path d="M8 1v14M1 8h14" stroke="currentColor" stroke-width="2" />
+          </svg>
+        </button>
+      </p>
+
+      <!-- 5. Image with no alt attribute, and a source that 404s. -->
+      <p><img src="/tests/fixtures/fail/absent-image.png" width="80" height="40" /></p>
+
+      <!-- 6. Fragment link with no matching element. -->
+      <p><a href="#section-that-does-not-exist">Jump to a missing section</a></p>
+
+      <!-- 7. Placeholder link. -->
+      <p><a href="#">Do nothing</a></p>
+
+      <!-- 8. Absent expected element: the config expects [data-metric-card]. -->
+
+      <!-- 9. Interaction target that never appears. -->
+      <button type="button" data-action="open">Open panel</button>
+    </main>
+
+    <script>
+      // 10. Console error and an uncaught exception.
+      console.error('Intentional console error from the failing fixture');
+      window.setTimeout(() => {
+        throw new Error('Intentional uncaught exception from the failing fixture');
+      }, 0);
+    </script>
+  </body>
+</html>

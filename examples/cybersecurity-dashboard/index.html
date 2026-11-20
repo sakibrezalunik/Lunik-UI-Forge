@@ -1,0 +1,431 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta
+      name="description"
+      content="Sentinel — a runnable sample security operations dashboard used by Lunik UI Forge examples."
+    />
+    <title>Sentinel — Security operations</title>
+    <link rel="icon" href="data:," />
+    <link rel="stylesheet" href="./styles.css" />
+  </head>
+  <body>
+    <a class="skip-link" href="#main">Skip to main content</a>
+
+    <div class="shell">
+      <aside class="sidebar" aria-label="Primary">
+        <div class="brand">
+          <span class="brand-mark" aria-hidden="true">S</span>
+          <span class="brand-copy">
+            <span class="brand-name">Sentinel</span>
+            <span class="brand-meta">SOC · EU West</span>
+          </span>
+        </div>
+
+        <nav class="nav" aria-label="Sections">
+          <p class="nav-label">Operations</p>
+          <ul>
+            <li>
+              <a class="nav-link" href="#alerts" aria-current="page">
+                <span class="nav-icon" aria-hidden="true">
+                  <svg viewBox="0 0 20 20" focusable="false">
+                    <path d="M10 2.8 17 5.5v4.2c0 3.7-2.7 6.6-7 7.5-4.3-.9-7-3.8-7-7.5V5.5Z" />
+                    <path d="M10 6.8v3.5M10 13.2h.01" />
+                  </svg>
+                </span>
+                Alerts
+              </a>
+            </li>
+            <li>
+              <a class="nav-link" href="#timeline">
+                <span class="nav-icon" aria-hidden="true">
+                  <svg viewBox="0 0 20 20" focusable="false">
+                    <path d="M4 4.5h12M4 10h12M4 15.5h7" />
+                    <circle cx="2.6" cy="4.5" r=".7" />
+                    <circle cx="2.6" cy="10" r=".7" />
+                    <circle cx="2.6" cy="15.5" r=".7" />
+                  </svg>
+                </span>
+                Event timeline
+              </a>
+            </li>
+            <li>
+              <a class="nav-link" href="#assets">
+                <span class="nav-icon" aria-hidden="true">
+                  <svg viewBox="0 0 20 20" focusable="false">
+                    <rect x="2.8" y="3.2" width="14.4" height="5" rx="1.2" />
+                    <rect x="2.8" y="11.8" width="14.4" height="5" rx="1.2" />
+                    <path d="M5.4 5.7h.01M5.4 14.3h.01" />
+                  </svg>
+                </span>
+                Asset health
+              </a>
+            </li>
+            <li>
+              <a class="nav-link" href="#metrics">
+                <span class="nav-icon" aria-hidden="true">
+                  <svg viewBox="0 0 20 20" focusable="false">
+                    <path d="M2.5 16.5v-9M7.5 16.5v-6M12.5 16.5v-9M17.5 16.5v-4" />
+                  </svg>
+                </span>
+                Detection metrics
+              </a>
+            </li>
+          </ul>
+        </nav>
+
+        <p class="sidebar-note">
+          Sample data only. No telemetry is collected and no external connection is
+          made. Values are illustrative.
+        </p>
+      </aside>
+
+      <div class="content">
+        <header class="topbar">
+          <div>
+            <p class="eyebrow">Defensive operations · Sample environment</p>
+            <h1>Security operations</h1>
+            <p class="page-subtitle">
+              Last 24 hours · <span data-last-refreshed>Updated 09:41</span>
+            </p>
+          </div>
+
+          <div class="topbar-actions">
+            <div class="field">
+              <label class="field-label" for="alert-search">Search alerts or assets</label>
+              <input
+                id="alert-search"
+                class="input"
+                type="search"
+                placeholder="e.g. credential or FS-014"
+                autocomplete="off"
+                data-search
+              />
+            </div>
+            <button class="button button-secondary" type="button" data-action="refresh">
+              Refresh view
+            </button>
+          </div>
+        </header>
+
+        <main id="main">
+          <section class="banner" aria-labelledby="posture-heading" data-posture>
+            <div class="banner-main">
+              <p class="banner-label" id="posture-heading">Current posture</p>
+              <p class="banner-value">
+                <span class="severity-dot severity-dot-high" aria-hidden="true"></span>
+                Elevated — active credential-access attempts
+              </p>
+              <p class="banner-detail">
+                Detections are up against a 30-day baseline. Two hosts are quarantined and
+                awaiting analyst review. This banner is static sample content.
+              </p>
+            </div>
+            <dl class="banner-facts">
+              <div class="banner-fact">
+                <dt>Quarantined hosts</dt>
+                <dd>2</dd>
+              </div>
+              <div class="banner-fact">
+                <dt>Review queue</dt>
+                <dd>1 pending</dd>
+              </div>
+              <div class="banner-fact">
+                <dt>Detection baseline</dt>
+                <dd>30 days</dd>
+              </div>
+            </dl>
+          </section>
+
+          <section id="metrics" aria-labelledby="metrics-heading">
+            <h2 id="metrics-heading" class="visually-hidden">Detection metrics</h2>
+            <ul class="metric-grid" role="list">
+              <li class="card metric">
+                <p class="metric-label">Open alerts</p>
+                <p class="metric-value">18</p>
+                <p class="metric-meta"><span class="delta-up">+5</span> since 06:00</p>
+              </li>
+              <li class="card metric">
+                <p class="metric-label">Critical incidents</p>
+                <p class="metric-value">2</p>
+                <p class="metric-meta">1 under investigation</p>
+              </li>
+              <li class="card metric">
+                <p class="metric-label">Mean time to detect</p>
+                <p class="metric-value">4m 12s</p>
+                <p class="metric-meta"><span class="delta-down">−38s</span> vs 7-day average</p>
+              </li>
+              <li class="card metric">
+                <p class="metric-label">Endpoints reporting</p>
+                <p class="metric-value">1,196 / 1,204</p>
+                <p class="metric-meta">8 agents offline</p>
+              </li>
+            </ul>
+          </section>
+
+          <section id="alerts" class="card" aria-labelledby="alerts-heading">
+            <div class="card-header card-header-wrap">
+              <div>
+                <h2 id="alerts-heading">Alert queue</h2>
+                <p class="card-subtitle">
+                  <span data-result-count>8</span> of 8 alerts · newest first · sample data
+                </p>
+              </div>
+
+              <div class="filter-group" role="group" aria-label="Filter alerts by severity">
+                <button class="chip is-active" type="button" data-severity="all" aria-pressed="true">
+                  All severities
+                  <span class="chip-count" data-count="all">8</span>
+                </button>
+                <button class="chip" type="button" data-severity="critical" aria-pressed="false">
+                  Critical
+                  <span class="chip-count" data-count="critical">2</span>
+                </button>
+                <button class="chip" type="button" data-severity="high" aria-pressed="false">
+                  High
+                  <span class="chip-count" data-count="high">2</span>
+                </button>
+                <button class="chip" type="button" data-severity="medium" aria-pressed="false">
+                  Medium
+                  <span class="chip-count" data-count="medium">3</span>
+                </button>
+              </div>
+            </div>
+
+            <p class="visually-hidden" role="status" aria-live="polite" data-live-status></p>
+
+            <!-- Overflow cue for the scroll box below. It sits immediately above
+                 the table (not under it) so it is on screen whenever the table's
+                 first rows are — a cue below an eight-row table is off-screen at
+                 a 900px-high viewport. It is a sibling, not a child, so it cannot
+                 scroll or cover the table; app.js keeps `data-visible` in step
+                 with the real scroll state and the styling lives in
+                 .table-scroll-hint. aria-hidden is deliberate: the region's own
+                 name already states that this table scrolls. -->
+            <p class="table-scroll-hint" data-scroll-hint aria-hidden="true">
+              <span>More columns, including Acknowledge</span>
+              <span class="table-scroll-hint-arrow" aria-hidden="true">→</span>
+            </p>
+
+            <!-- At narrow widths this box scrolls horizontally. Without a focus
+                 stop and a name, a keyboard-only user could not reach or scroll
+                 it (WCAG 2.1.1), and an assistive technology user would meet an
+                 unlabelled scroll area. The table inside keeps its own semantics. -->
+            <div class="table-frame">
+              <div
+                class="table-wrap"
+                tabindex="0"
+                role="region"
+                aria-label="Scrollable security alerts table"
+              >
+              <table class="table" data-alert-table>
+                <caption class="visually-hidden">
+                  Alerts with severity, detection, affected asset, and triage state
+                </caption>
+                <thead>
+                  <tr>
+                    <th scope="col">Severity</th>
+                    <th scope="col">Alert</th>
+                    <th scope="col">Asset</th>
+                    <th scope="col">Detected</th>
+                    <th scope="col">State</th>
+                    <th scope="col"><span class="visually-hidden">Actions</span></th>
+                  </tr>
+                </thead>
+                <tbody data-alert-body>
+                  <!-- Rows are rendered from local sample data in app.js -->
+                </tbody>
+                </table>
+              </div>
+              <!-- A soft edge treatment, not the affordance: the labelled cue above
+                   remains the cue. app.js hides this at the rightmost position. -->
+              <span class="table-edge" data-scroll-edge aria-hidden="true"></span>
+            </div>
+
+            <div class="state-block" data-empty-state hidden>
+              <span class="state-icon" aria-hidden="true">
+                <svg viewBox="0 0 24 24" focusable="false">
+                  <path d="M12 3 21 20H3Z" />
+                  <path d="M12 9v4.5M12 16.5h.01" />
+                </svg>
+              </span>
+              <div class="state-copy">
+                <p class="state-title">No alerts match these filters</p>
+                <p class="state-body">
+                  Choose <strong>All severities</strong> or clear the search box to see the queue.
+                </p>
+              </div>
+              <button class="button button-secondary" type="button" data-action="reset-filters">
+                Reset filters
+              </button>
+            </div>
+          </section>
+
+          <div class="split">
+            <section id="timeline" class="card" aria-labelledby="timeline-heading">
+              <div class="card-header">
+                <h2 id="timeline-heading">Event timeline</h2>
+                <p class="card-subtitle">Newest first</p>
+              </div>
+
+              <ol class="timeline" role="list">
+                <li class="timeline-item">
+                  <span class="timeline-marker" aria-hidden="true"></span>
+                  <p class="timeline-time">
+                    <time datetime="2026-11-15T09:41">09:41:22</time>
+                  </p>
+                  <div>
+                    <p class="timeline-title">
+                      <span class="badge badge-critical">Critical</span>
+                      Credential stuffing burst blocked
+                    </p>
+                    <p class="timeline-detail">
+                      412 failed sign-ins across 96 accounts in 4 minutes; source range
+                      blocked at the edge.
+                    </p>
+                  </div>
+                </li>
+                <li class="timeline-item">
+                  <span class="timeline-marker" aria-hidden="true"></span>
+                  <p class="timeline-time">
+                    <time datetime="2026-11-15T09:12">09:12:04</time>
+                  </p>
+                  <div>
+                    <p class="timeline-title">
+                      <span class="badge badge-high">High</span>
+                      Unusual outbound transfer volume
+                    </p>
+                    <p class="timeline-detail">
+                      Host FS-014 sent 1.8 GB to an unrecognised destination; host quarantined.
+                    </p>
+                  </div>
+                </li>
+                <li class="timeline-item">
+                  <span class="timeline-marker" aria-hidden="true"></span>
+                  <p class="timeline-time">
+                    <time datetime="2026-11-15T08:47">08:47:51</time>
+                  </p>
+                  <div>
+                    <p class="timeline-title">
+                      <span class="badge badge-medium">Medium</span>
+                      Antivirus definitions outdated
+                    </p>
+                    <p class="timeline-detail">
+                      12 endpoints have definitions older than 48 hours; two are servers.
+                    </p>
+                  </div>
+                </li>
+                <li class="timeline-item">
+                  <span class="timeline-marker" aria-hidden="true"></span>
+                  <p class="timeline-time">
+                    <time datetime="2026-11-15T07:58">07:58:10</time>
+                  </p>
+                  <div>
+                    <p class="timeline-title">
+                      <span class="badge badge-low">Low</span>
+                      Service account password rotation due
+                    </p>
+                    <p class="timeline-detail">
+                      Three non-interactive service accounts reach rotation age in 5 days.
+                    </p>
+                  </div>
+                </li>
+              </ol>
+            </section>
+
+            <section id="assets" class="card" aria-labelledby="assets-heading">
+              <div class="card-header">
+                <h2 id="assets-heading">Asset health</h2>
+                <p class="card-subtitle">Coverage by group</p>
+              </div>
+
+              <ul class="asset-list" role="list">
+                <li class="asset">
+                  <div class="asset-row">
+                    <span class="asset-name">Workstations</span>
+                    <span class="asset-value">92%</span>
+                  </div>
+                  <div
+                    class="meter"
+                    role="progressbar"
+                    aria-valuenow="92"
+                    aria-valuemin="0"
+                    aria-valuemax="100"
+                    aria-label="Workstation protection coverage"
+                  >
+                    <span class="meter-fill" style="width: 92%"></span>
+                    <span class="meter-target" aria-hidden="true"></span>
+                  </div>
+                </li>
+                <li class="asset">
+                  <div class="asset-row">
+                    <span class="asset-name">Servers</span>
+                    <span class="asset-value">98%</span>
+                  </div>
+                  <div
+                    class="meter"
+                    role="progressbar"
+                    aria-valuenow="98"
+                    aria-valuemin="0"
+                    aria-valuemax="100"
+                    aria-label="Server protection coverage"
+                  >
+                    <span class="meter-fill" style="width: 98%"></span>
+                    <span class="meter-target" aria-hidden="true"></span>
+                  </div>
+                </li>
+                <li class="asset">
+                  <div class="asset-row">
+                    <span class="asset-name">Cloud workloads</span>
+                    <span class="asset-value">76%</span>
+                  </div>
+                  <div
+                    class="meter"
+                    role="progressbar"
+                    aria-valuenow="76"
+                    aria-valuemin="0"
+                    aria-valuemax="100"
+                    aria-label="Cloud workload protection coverage"
+                  >
+                    <span class="meter-fill meter-fill-warn" style="width: 76%"></span>
+                    <span class="meter-target" aria-hidden="true"></span>
+                  </div>
+                </li>
+                <li class="asset">
+                  <div class="asset-row">
+                    <span class="asset-name">Mobile devices</span>
+                    <span class="asset-value">64%</span>
+                  </div>
+                  <div
+                    class="meter"
+                    role="progressbar"
+                    aria-valuenow="64"
+                    aria-valuemin="0"
+                    aria-valuemax="100"
+                    aria-label="Mobile device protection coverage"
+                  >
+                    <span class="meter-fill meter-fill-warn" style="width: 64%"></span>
+                    <span class="meter-target" aria-hidden="true"></span>
+                  </div>
+                </li>
+              </ul>
+
+              <p class="asset-note">
+                The marker shows the 80% coverage target. Anything left of it is flagged for
+                review; mobile coverage has been declining for three reporting periods.
+              </p>
+            </section>
+          </div>
+        </main>
+
+        <footer class="footer">
+          <p>Sentinel sample dashboard · part of Lunik UI Forge examples · no live telemetry</p>
+        </footer>
+      </div>
+    </div>
+
+    <script src="./app.js" type="module"></script>
+  </body>
+</html>

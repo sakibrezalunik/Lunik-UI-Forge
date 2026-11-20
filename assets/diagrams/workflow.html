@@ -1,0 +1,182 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Lunik UI Forge — workflow</title>
+<style>
+  :root {
+    --bg: #0b111d; --ink: #e9eef6; --muted: #93a1b7; --faint: #63718a;
+    --line: #2b3648; --node: #121a2a; --node-line: #3a465c;
+    --violet: #8b7cff; --cyan: #46d7c9; --amber: #ffbe6b; --green: #67e8a5;
+    --mono: "Cascadia Mono", "Consolas", monospace;
+  }
+  * { box-sizing: border-box; }
+  html, body { margin: 0; width: 900px; height: 1000px; overflow: hidden; }
+  body {
+    position: relative; background: var(--bg); color: var(--ink);
+    font-family: "Segoe UI", system-ui, sans-serif; -webkit-font-smoothing: antialiased;
+  }
+  body::before {
+    content: ""; position: absolute; inset: 0;
+    background-image:
+      linear-gradient(to right, rgba(255,255,255,0.032) 1px, transparent 1px),
+      linear-gradient(to bottom, rgba(255,255,255,0.032) 1px, transparent 1px);
+    background-size: 40px 40px;
+    mask-image: radial-gradient(700px 700px at 55% 40%, #000 25%, transparent 92%);
+  }
+  .head { position: absolute; left: 40px; top: 24px; }
+  .head .k { font-family: var(--mono); font-size: 10px; letter-spacing: 0.22em; color: var(--cyan); text-transform: uppercase; }
+  .head h1 { margin: 7px 0 0; font-family: "Bahnschrift", "Segoe UI", sans-serif; font-size: 23px; font-weight: 600; letter-spacing: -0.01em; }
+  .head p { margin: 5px 0 0; font-size: 12px; color: var(--muted); }
+
+  .band { position: absolute; border: 1px dashed var(--line); border-radius: 12px; background: rgba(9,14,22,0.5); }
+  .band-label { position: absolute; top: 8px; left: 18px; padding: 0; background: transparent; font-family: var(--mono); font-size: 9.5px; letter-spacing: 0.16em; text-transform: uppercase; color: #7f8ea6; }
+
+  .node { position: absolute; z-index: 2; border-radius: 10px; border: 1px solid var(--node-line); background: var(--node); padding: 11px 13px; box-shadow: 0 10px 24px rgba(0,0,0,0.25); }
+  .node .t { font-size: 15px; font-weight: 600; letter-spacing: -0.005em; }
+  .node .p { margin-top: 4px; font-family: var(--mono); font-size: 10px; letter-spacing: 0.02em; color: #8fa1b9; }
+  .node .d { margin-top: 5px; font-size: 11.5px; line-height: 1.42; color: #9dabc0; }
+  .node.out { border-color: #2f6f63; background: #0f1f1c; }
+  .node.out .t { color: #d7f5ee; }
+  .node.human { border-color: #8a6a33; background: #1e1a12; }
+  .node.human .t { color: #f4e3c4; }
+  .node.gate { border-color: #6d5bd0; background: #171329; }
+  .node.gate .t { color: #e9e3ff; }
+  .node.fail { border-color: #8b3a45; background: #241417; }
+  .node.fail .t { color: #ffd9dd; }
+  .node.mini { padding: 9px 11px; }
+  .node.mini .t { font-size: 13px; }
+  .node.mini .d { font-size: 10.5px; }
+
+  svg.wires { position: absolute; inset: 0; z-index: 1; }
+  .wire { fill: none; stroke: #61718a; stroke-width: 1.4; }
+  .wire.dash { stroke-dasharray: 4 4; }
+  .wire.amber { stroke: #8a6a33; }
+  .wire.green { stroke: #2f6f63; }
+
+  .foot { position: absolute; left: 40px; right: 40px; bottom: 26px; display: flex; justify-content: space-between; align-items: center; font-family: var(--mono); font-size: 9.5px; letter-spacing: 0.08em; color: #5c6a80; }
+  .foot b { color: #9dabc0; font-weight: 500; }
+  .legend { display: flex; gap: 16px; }
+  .legend span { display: flex; align-items: center; gap: 6px; }
+  .legend i { width: 8px; height: 8px; border-radius: 2px; display: block; }
+</style>
+</head>
+<body>
+  <div class="head">
+    <div class="k">Product workflow</div>
+    <h1>From config to a human-approved baseline</h1>
+    <p>What the verifier does on its own — and the one step it cannot take for you.</p>
+  </div>
+
+  <div class="band" style="left:30px; top:96px; width:500px; height:800px;">
+    <div class="band-label">Automated verification · read-only</div>
+  </div>
+  <div class="band" style="left:550px; top:96px; width:320px; height:300px;">
+    <div class="band-label">Visual comparison · read-only</div>
+  </div>
+  <div class="band" style="left:550px; top:420px; width:320px; height:476px; border-color:#4a3b22;">
+    <div class="band-label" style="color:#a98a55; left:auto; right:18px;">Human approval · only write path</div>
+  </div>
+
+  <svg class="wires" width="900" height="1000" aria-hidden="true">
+    <defs>
+      <marker id="ar" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+        <path d="M 0 0 L 10 5 L 0 10 z" fill="#61718a"/>
+      </marker>
+      <marker id="ar-amber" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+        <path d="M 0 0 L 10 5 L 0 10 z" fill="#8a6a33"/>
+      </marker>
+      <marker id="ar-green" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+        <path d="M 0 0 L 10 5 L 0 10 z" fill="#2f6f63"/>
+      </marker>
+    </defs>
+    <!-- left pipeline -->
+    <path class="wire" marker-end="url(#ar)" d="M280 218 V243"/>
+    <path class="wire" marker-end="url(#ar)" d="M280 321 V346"/>
+    <path class="wire" marker-end="url(#ar)" d="M280 424 V449"/>
+    <path class="wire" marker-end="url(#ar)" d="M280 527 V552"/>
+    <path class="wire" marker-end="url(#ar)" d="M280 652 V677"/>
+    <!-- screenshot into visual comparison -->
+    <path class="wire" marker-end="url(#ar)" d="M505 488 H540 V178 H570"/>
+    <!-- compare outcomes -->
+    <path class="wire" marker-end="url(#ar)" d="M710 220 V245 H637"/>
+    <path class="wire" marker-end="url(#ar)" d="M710 220 V245 H782"/>
+    <!-- no baseline into human review -->
+    <path class="wire amber" marker-end="url(#ar-amber)" d="M637 307 V460"/>
+    <!-- human approval chain -->
+    <path class="wire amber" marker-end="url(#ar-amber)" d="M710 530 V555"/>
+    <path class="wire amber" marker-end="url(#ar-amber)" d="M710 625 V650"/>
+    <path class="wire amber" marker-end="url(#ar-amber)" d="M710 720 V745"/>
+    <!-- baseline back to comparison -->
+    <path class="wire green dash" marker-end="url(#ar-green)" d="M850 790 H878 V178 H850"/>
+    <text x="786" y="404" font-family="Cascadia Mono, Consolas, monospace" font-size="9" fill="#6f8f87" text-anchor="end">next run</text>
+  </svg>
+
+  <div class="node" style="left:55px; top:140px; width:450px; height:78px;">
+    <div class="t">lunik.config.json</div>
+    <div class="d">Pages, viewports and check settings — merged over defaults and validated before anything launches.</div>
+  </div>
+  <div class="node" style="left:55px; top:243px; width:450px; height:78px;">
+    <div class="t">Page × viewport</div>
+    <div class="d">One fresh browser context per combination, with locale, timezone, colour scheme and motion pinned.</div>
+  </div>
+  <div class="node" style="left:55px; top:346px; width:450px; height:78px;">
+    <div class="t">Browser runner</div>
+    <div class="d">The built-in static server serves the page over real HTTP; Chromium loads it at the target viewport.</div>
+  </div>
+  <div class="node" style="left:55px; top:449px; width:450px; height:78px;">
+    <div class="t">Initial screenshot</div>
+    <div class="d">Captured before any check or scripted interaction can mutate the page.</div>
+  </div>
+  <div class="node" style="left:55px; top:552px; width:450px; height:100px;">
+    <div class="t">Automated checks</div>
+    <div class="d">console · network · overflow · a11y names · labels<br>contrast · links · elements · interactions</div>
+  </div>
+  <div class="node out" style="left:55px; top:677px; width:450px; height:110px;">
+    <div class="t">Report + exit code</div>
+    <div class="d">report.json · report.md · screenshots · diffs</div>
+    <div class="p" style="margin-top:7px;">0 pass · 1 fail · 2 config · 3 could not run</div>
+  </div>
+
+  <div class="node mini" style="left:570px; top:135px; width:280px; height:85px;">
+    <div class="t">Compare with approved baseline</div>
+    <div class="d">Size, pixels, SHA-256 and browser build are all part of the comparison.</div>
+  </div>
+  <div class="node mini fail" style="left:570px; top:245px; width:135px; height:62px;">
+    <div class="t">No baseline</div>
+    <div class="d">FAIL + approval command</div>
+  </div>
+  <div class="node mini fail" style="left:715px; top:245px; width:135px; height:62px;">
+    <div class="t">Mismatch</div>
+    <div class="d">FAIL or INCONCLUSIVE</div>
+  </div>
+
+  <div class="node mini human" style="left:570px; top:460px; width:280px; height:70px;">
+    <div class="t">Human reviews the screenshot</div>
+    <div class="d">A baseline is a claim that a rendering is correct.</div>
+  </div>
+  <div class="node mini human" style="left:570px; top:555px; width:280px; height:70px;">
+    <div class="t">Dry run</div>
+    <div class="d">Prints the run id, candidate path and SHA-256.</div>
+  </div>
+  <div class="node mini gate" style="left:570px; top:650px; width:280px; height:70px;">
+    <div class="t">Confirm the exact bytes</div>
+    <div class="d">--run · --approve-hash · --confirm</div>
+  </div>
+  <div class="node mini out" style="left:570px; top:745px; width:280px; height:90px;">
+    <div class="t">Baseline written</div>
+    <div class="d">Image + manifest, guarded by a lock and a recoverable journal.</div>
+  </div>
+
+  <div style="position:absolute; left:55px; top:828px; width:450px; font-size:11px; line-height:1.5; color:#7f8ea6;">Warnings stay warnings. A check that could not run is <span style="color:#c5cee0;">inconclusive</span> — never silently folded into a pass.</div>
+
+  <div class="foot">
+    <span>The verifier <b>never writes</b> to baselines/.</span>
+    <span class="legend">
+      <span><i style="background:#8a6a33;"></i>human approval</span>
+      <span><i style="background:#2f6f63;"></i>output</span>
+      <span><i style="background:#61718a;"></i>automated</span>
+    </span>
+  </div>
+</body>
+</html>

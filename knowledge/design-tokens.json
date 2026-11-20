@@ -1,0 +1,116 @@
+{
+  "$comment": "Default token set for Lunik UI Forge. Projects should copy the semantic tokens they need into their own DESIGN.md rather than inventing parallel names. Values are the reference palette used by the bundled examples.",
+  "version": 1,
+  "color": {
+    "primitive": {
+      "ink-900": "#111318",
+      "ink-700": "#33384a",
+      "ink-500": "#5b6172",
+      "ink-300": "#8b90a0",
+      "line-200": "#d7dbe2",
+      "line-100": "#e8ebf0",
+      "paper-000": "#ffffff",
+      "paper-050": "#f6f7f9",
+      "paper-100": "#eef1f5",
+      "blue-600": "#1d4ed8",
+      "blue-500": "#2563eb",
+      "blue-050": "#e8eefc",
+      "green-700": "#15803d",
+      "green-050": "#e7f6ec",
+      "amber-700": "#a16207",
+      "amber-050": "#fdf3e0",
+      "red-700": "#b91c1c",
+      "red-050": "#fdeaea",
+      "slate-900": "#0d1117",
+      "slate-850": "#131922",
+      "slate-800": "#1a2130"
+    },
+    "semantic": {
+      "bg": "#f6f7f9",
+      "surface": "#ffffff",
+      "surface-muted": "#eef1f5",
+      "border": "#d7dbe2",
+      "border-strong": "#8b90a0",
+      "text": "#111318",
+      "text-muted": "#5b6172",
+      "accent": "#1d4ed8",
+      "accent-text": "#ffffff",
+      "accent-subtle": "#e8eefc",
+      "success": "#15803d",
+      "success-subtle": "#e7f6ec",
+      "success-strong": "#116b30",
+      "warning": "#a16207",
+      "warning-subtle": "#fdf3e0",
+      "warning-strong": "#8a5305",
+      "danger": "#b91c1c",
+      "danger-subtle": "#fdeaea",
+      "focus-ring": "#b45309"
+    },
+    "contrastNotes": {
+      "$comment": "Measured with the bundled contrast check against the stated background. Re-measure if a value changes.",
+      "text-on-surface": "18.58:1",
+      "text-muted-on-surface": "6.18:1",
+      "text-muted-on-bg": "5.77:1",
+      "accent-on-surface": "6.70:1",
+      "accent-text-on-accent": "6.70:1",
+      "danger-on-danger-subtle": "5.59:1",
+      "success-strong-on-success-subtle": "5.93:1",
+      "warning-strong-on-warning-subtle": "5.74:1",
+      "$whyStrongVariants": "The base success (#15803d) and warning (#a16207) reach only 4.49:1 and 4.47:1 on their subtle backgrounds — just under the 4.5:1 AA floor for small text. Use the -strong variants for text on subtle fills."
+    },
+    "rule": "Never encode meaning in colour alone. Pair every semantic colour with an icon, label, or pattern."
+  },
+  "space": {
+    "$comment": "4px base scale. Use these steps only; arbitrary values are how interfaces drift.",
+    "1": "4px",
+    "2": "8px",
+    "3": "12px",
+    "4": "16px",
+    "5": "24px",
+    "6": "32px",
+    "7": "48px",
+    "8": "64px"
+  },
+  "radius": {
+    "sm": "6px",
+    "md": "10px",
+    "lg": "16px",
+    "pill": "999px"
+  },
+  "typography": {
+    "family": {
+      "sans": "system-ui, -apple-system, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif",
+      "mono": "ui-monospace, SFMono-Regular, Menlo, Consolas, 'Liberation Mono', monospace"
+    },
+    "scale": {
+      "xs": { "size": "12px", "line": "16px", "use": "captions, table meta, badges" },
+      "sm": { "size": "14px", "line": "20px", "use": "body in dense tables, secondary text" },
+      "md": { "size": "16px", "line": "24px", "use": "default body" },
+      "lg": { "size": "18px", "line": "26px", "use": "lead paragraphs" },
+      "xl": { "size": "22px", "line": "28px", "use": "section headings" },
+      "2xl": { "size": "28px", "line": "34px", "use": "page title" },
+      "3xl": { "size": "36px", "line": "42px", "use": "metric values" }
+    },
+    "rule": "Minimum 14px for body text; 12px only for non-essential metadata. Never disable user zoom."
+  },
+  "motion": {
+    "duration": { "fast": "120ms", "base": "180ms", "slow": "280ms" },
+    "easing": { "standard": "cubic-bezier(0.2, 0, 0.2, 1)", "exit": "cubic-bezier(0.4, 0, 1, 1)" },
+    "rule": "Wrap every animation in a prefers-reduced-motion guard. Motion explains a change; it never delays access to content."
+  },
+  "layout": {
+    "breakpoints": {
+      "sm": "480px",
+      "md": "768px",
+      "lg": "1024px",
+      "xl": "1440px"
+    },
+    "containers": { "content": "72rem", "dense": "88rem" },
+    "rule": "Layouts must not horizontally scroll at 320px. Dense tables scroll inside their own container, never the page."
+  },
+  "focus": {
+    "ring": "3px solid #b45309",
+    "offset": "2px",
+    "rule": "Never remove focus outlines. Use :focus-visible so pointer users do not see the ring."
+  }
+}

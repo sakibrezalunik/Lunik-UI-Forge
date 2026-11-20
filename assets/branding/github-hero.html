@@ -1,0 +1,289 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Lunik UI Forge — GitHub hero</title>
+<style>
+  :root {
+    --bg: #06080f;
+    --ink: #f2f5fa;
+    --muted: #93a1b7;
+    --faint: #5c6a80;
+    --line: rgba(255,255,255,0.085);
+    --line-soft: rgba(255,255,255,0.045);
+    --violet: #8b7cff;
+    --cyan: #46d7c9;
+    --amber: #ffbe6b;
+    --green: #67e8a5;
+    --mono: "Cascadia Mono", "Consolas", "SFMono-Regular", monospace;
+  }
+  * { box-sizing: border-box; }
+  html, body { width: 1600px; height: 900px; margin: 0; overflow: hidden; }
+  body {
+    position: relative;
+    background:
+      radial-gradient(1050px 720px at 79% 17%, rgba(124,92,255,0.24), transparent 62%),
+      radial-gradient(820px 560px at 8% 88%, rgba(70,215,201,0.11), transparent 64%),
+      radial-gradient(700px 500px at 55% 112%, rgba(255,190,107,0.10), transparent 62%),
+      var(--bg);
+    color: var(--ink);
+    font-family: "Segoe UI", system-ui, sans-serif;
+    -webkit-font-smoothing: antialiased;
+  }
+  body::before {
+    content: "";
+    position: absolute; inset: 0;
+    background-image:
+      linear-gradient(to right, rgba(255,255,255,0.038) 1px, transparent 1px),
+      linear-gradient(to bottom, rgba(255,255,255,0.038) 1px, transparent 1px),
+      linear-gradient(to right, rgba(139,124,255,0.10) 1px, transparent 1px),
+      linear-gradient(to bottom, rgba(139,124,255,0.10) 1px, transparent 1px);
+    background-size: 48px 48px, 48px 48px, 240px 240px, 240px 240px;
+    mask-image: radial-gradient(1100px 800px at 60% 40%, #000 20%, transparent 92%);
+    opacity: 0.9;
+  }
+  .frame { position: absolute; inset: 26px; border: 1px solid rgba(255,255,255,0.065); border-radius: 4px; pointer-events: none; }
+  .corner { position: absolute; width: 26px; height: 26px; }
+  .corner.tl { left: 26px; top: 26px; border-left: 2px solid rgba(139,124,255,0.55); border-top: 2px solid rgba(139,124,255,0.55); }
+  .corner.br { right: 26px; bottom: 26px; border-right: 2px solid rgba(70,215,201,0.45); border-bottom: 2px solid rgba(70,215,201,0.45); }
+
+  .brand { position: absolute; left: 74px; top: 62px; display: flex; align-items: center; gap: 16px; }
+  .mark { width: 54px; height: 54px; display: block; }
+  .brand-name { font-family: "Bahnschrift", "Segoe UI", sans-serif; font-size: 25px; font-weight: 600; letter-spacing: 0.19em; }
+  .brand-sub { margin-top: 7px; font-family: var(--mono); font-size: 10.5px; letter-spacing: 0.21em; color: var(--faint); text-transform: uppercase; }
+
+  .copy { position: absolute; left: 76px; top: 238px; width: 680px; }
+  .eyebrow { display: flex; align-items: center; gap: 10px; font-family: var(--mono); font-size: 11px; letter-spacing: 0.2em; color: var(--cyan); text-transform: uppercase; }
+  .eyebrow::before { content: ""; width: 26px; height: 1px; background: var(--cyan); opacity: 0.7; }
+  h1 { margin: 22px 0 0; font-family: "Bahnschrift", "Segoe UI", sans-serif; font-size: 64px; line-height: 1.05; font-weight: 600; letter-spacing: -0.028em; }
+  h1 .grad {
+    background: linear-gradient(96deg, #c8c2ff 0%, #8b7cff 38%, #46d7c9 100%);
+    -webkit-background-clip: text; background-clip: text; color: transparent;
+  }
+  .lede { margin: 26px 0 0; width: 580px; font-size: 19px; line-height: 1.62; color: var(--muted); }
+  .lede strong { color: #d6deeb; font-weight: 600; }
+  .pills { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 30px; width: 610px; }
+  .pill { display: flex; align-items: center; gap: 9px; padding: 10px 13px; border: 1px solid var(--line); border-radius: 999px; background: rgba(11,17,29,0.66); font-family: var(--mono); font-size: 10.5px; letter-spacing: 0.11em; color: #b4c0d3; text-transform: uppercase; }
+  .dot { width: 6px; height: 6px; border-radius: 50%; background: var(--green); box-shadow: 0 0 10px rgba(103,232,165,0.7); }
+  .dot.amber { background: var(--amber); box-shadow: 0 0 10px rgba(255,190,107,0.65); }
+  .dot.violet { background: var(--violet); box-shadow: 0 0 10px rgba(139,124,255,0.7); }
+
+  .flow { position: absolute; left: 76px; bottom: 64px; display: flex; align-items: center; gap: 12px; font-family: var(--mono); font-size: 11px; letter-spacing: 0.12em; color: #7c8ba2; text-transform: uppercase; }
+  .flow b { color: #c5cee0; font-weight: 500; }
+  .flow .arrow { color: var(--violet); }
+  .legal { position: absolute; left: 76px; bottom: 37px; font-family: var(--mono); font-size: 9.5px; letter-spacing: 0.17em; color: #4e5b70; text-transform: uppercase; }
+
+  .browser {
+    position: absolute; left: 742px; top: 150px; width: 748px; height: 586px;
+    border-radius: 16px; border: 1px solid rgba(255,255,255,0.10);
+    background: #0a0f19;
+    box-shadow: 0 40px 100px rgba(0,0,0,0.55), 0 0 0 1px rgba(139,124,255,0.07), 0 0 90px rgba(124,92,255,0.10);
+    overflow: hidden;
+  }
+  .chrome { height: 46px; display: flex; align-items: center; gap: 8px; padding: 0 16px; background: #0d1421; border-bottom: 1px solid var(--line-soft); }
+  .traf { display: flex; gap: 6px; margin-right: 10px; }
+  .traf i { width: 8px; height: 8px; border-radius: 50%; background: #263144; display: block; }
+  .url { flex: 1; height: 26px; display: flex; align-items: center; gap: 8px; padding: 0 12px; border-radius: 7px; border: 1px solid var(--line-soft); background: #090e17; font-family: var(--mono); font-size: 10px; color: #6f7f96; letter-spacing: 0.04em; }
+  .url .lock { width: 6px; height: 7px; border: 1px solid #5e6e86; border-radius: 1px; }
+  .chrome-tools { display: flex; gap: 5px; }
+  .chrome-tools i { width: 14px; height: 3px; border-radius: 2px; background: #263144; display: block; }
+
+  .app { display: flex; height: 540px; }
+  .app-side { width: 146px; flex: none; background: #080d16; border-right: 1px solid var(--line-soft); padding: 18px 14px; }
+  .app-side .mini-brand { display: flex; align-items: center; gap: 8px; margin-bottom: 24px; }
+  .app-side .mini-brand i { width: 20px; height: 20px; border-radius: 5px; background: linear-gradient(140deg, #8b7cff, #5a4bd6); display: block; }
+  .app-side .mini-brand span { width: 62px; height: 6px; border-radius: 3px; background: #2a3547; display: block; }
+  .navrow { height: 26px; margin-bottom: 7px; border-radius: 6px; background: #0e1523; display: flex; align-items: center; gap: 8px; padding: 0 8px; }
+  .navrow.active { background: #151e31; box-shadow: inset 2px 0 0 var(--violet); }
+  .navrow i { width: 8px; height: 8px; border: 1px solid #43516a; border-radius: 2px; display: block; }
+  .navrow span { width: 54px; height: 4px; border-radius: 2px; background: #2b374b; display: block; }
+  .navrow.active span { background: #53627c; }
+  .side-note { margin-top: 150px; padding-top: 14px; border-top: 1px solid var(--line-soft); }
+  .side-note i { display: block; height: 3px; border-radius: 2px; background: #1c2738; margin-bottom: 6px; }
+  .side-note i:nth-child(1) { width: 86%; }
+  .side-note i:nth-child(2) { width: 70%; }
+  .side-note i:nth-child(3) { width: 48%; }
+
+  .app-main { flex: 1; padding: 18px 20px; min-width: 0; position: relative; }
+  .app-head { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 16px; }
+  .app-head .t { width: 168px; height: 9px; border-radius: 3px; background: #d5dcea; }
+  .app-head .s { width: 112px; height: 5px; border-radius: 3px; background: #2c374b; margin-top: 8px; }
+  .app-head .search { width: 126px; height: 22px; border-radius: 5px; border: 1px solid #2a3446; background: #0d1420; }
+  .metric-row { display: grid; grid-template-columns: repeat(4, 1fr); gap: 9px; }
+  .metric { height: 72px; border-radius: 8px; border: 1px solid #202b3c; background: #0e1624; padding: 11px 12px; }
+  .metric .l { width: 58px; height: 4px; border-radius: 2px; background: #334053; }
+  .metric .v { width: 42px; height: 11px; border-radius: 3px; background: #c3cddd; margin-top: 10px; }
+  .metric .d { width: 38px; height: 3px; border-radius: 2px; background: #2a6b4b; margin-top: 8px; }
+  .chart { position: relative; height: 176px; margin-top: 11px; border-radius: 8px; border: 1px solid #202b3c; background: #0e1624; overflow: hidden; }
+  .chart svg { position: absolute; inset: 0; width: 100%; height: 100%; }
+  .chart .grid { position: absolute; inset: 24px 18px 22px; background-image: linear-gradient(to bottom, rgba(255,255,255,0.05) 1px, transparent 1px); background-size: 100% 38px; }
+  .chart .cap { position: absolute; left: 14px; top: 12px; width: 98px; height: 5px; border-radius: 2px; background: #3b4860; }
+  .table { margin-top: 11px; border-radius: 8px; border: 1px solid #202b3c; background: #0e1624; overflow: hidden; }
+  .trow { height: 33px; display: flex; align-items: center; gap: 14px; padding: 0 12px; border-bottom: 1px solid rgba(255,255,255,0.045); }
+  .trow:last-child { border-bottom: 0; }
+  .trow .b { height: 4px; border-radius: 2px; background: #303d51; }
+  .trow .b.a { width: 74px; } .trow .b.b { width: 38px; } .trow .b.c { width: 30px; }
+  .trow .badge { width: 34px; height: 12px; border-radius: 6px; background: rgba(103,232,165,0.13); border: 1px solid rgba(103,232,165,0.22); }
+
+  .bounds { position: absolute; left: 165px; top: 70px; width: 408px; height: 88px; border: 1px dashed rgba(70,215,201,0.55); border-radius: 6px; pointer-events: none; }
+  .bounds::after { content: "layout bounds"; position: absolute; left: 0; top: -17px; font-family: var(--mono); font-size: 8px; letter-spacing: 0.12em; color: var(--cyan); text-transform: uppercase; }
+  .cross { position: absolute; left: 520px; top: 22px; width: 18px; height: 18px; pointer-events: none; opacity: 0.8; }
+  .cross::before, .cross::after { content: ""; position: absolute; background: var(--amber); }
+  .cross::before { left: 8px; top: 0; width: 1px; height: 18px; }
+  .cross::after { top: 8px; left: 0; height: 1px; width: 18px; }
+  .scan { position: absolute; left: 0; right: 0; top: 208px; height: 1px; background: linear-gradient(90deg, transparent, rgba(70,215,201,0.55), transparent); box-shadow: 0 0 18px rgba(70,215,201,0.22); }
+  .ruler { position: absolute; right: 8px; top: 100px; display: flex; flex-direction: column; gap: 64px; align-items: flex-end; font-family: var(--mono); font-size: 8px; color: #4f5e76; letter-spacing: 0.08em; }
+  .ruler span { display: flex; align-items: center; gap: 6px; }
+  .ruler span::after { content: ""; width: 11px; height: 1px; background: #344158; }
+
+  .check-panel {
+    position: absolute; left: 1218px; top: 240px; width: 268px;
+    border-radius: 14px; border: 1px solid rgba(255,255,255,0.11);
+    background: rgba(10,16,27,0.92); backdrop-filter: blur(14px);
+    box-shadow: 0 26px 70px rgba(0,0,0,0.55), 0 0 50px rgba(124,92,255,0.10);
+    padding: 16px 16px 13px;
+  }
+  .cp-head { display: flex; justify-content: space-between; align-items: center; padding-bottom: 11px; border-bottom: 1px solid var(--line-soft); }
+  .cp-head span { font-family: var(--mono); font-size: 9px; letter-spacing: 0.18em; color: #7f8ea6; text-transform: uppercase; }
+  .cp-head b { font-family: var(--mono); font-size: 9px; font-weight: 500; color: var(--violet); letter-spacing: 0.1em; }
+  .cp-row { display: flex; align-items: center; justify-content: space-between; padding: 7.5px 0; font-family: var(--mono); font-size: 10px; color: #a9b7cb; letter-spacing: 0.03em; }
+  .cp-row + .cp-row { border-top: 1px solid rgba(255,255,255,0.035); }
+  .cp-row .st { display: flex; align-items: center; gap: 6px; color: #77dfa7; font-size: 8.5px; letter-spacing: 0.09em; }
+  .cp-row .st::before { content: ""; width: 4px; height: 4px; border-radius: 50%; background: currentColor; }
+  .cp-row .st.warn { color: var(--amber); }
+  .cp-row .st.skip { color: #6f7f96; }
+
+  .approval {
+    position: absolute; left: 690px; top: 668px; width: 384px;
+    border-radius: 14px; border: 1px solid rgba(255,190,107,0.22);
+    background: linear-gradient(155deg, rgba(20,22,30,0.96), rgba(11,16,26,0.96));
+    box-shadow: 0 30px 80px rgba(0,0,0,0.6), 0 0 60px rgba(255,190,107,0.07);
+    padding: 15px 17px 14px;
+  }
+  .ap-top { display: flex; align-items: center; justify-content: space-between; }
+  .ap-top span { font-family: var(--mono); font-size: 8.5px; letter-spacing: 0.2em; color: #8a7a63; text-transform: uppercase; }
+  .ap-status { display: flex; align-items: center; gap: 6px; font-family: var(--mono); font-size: 8.5px; letter-spacing: 0.12em; color: var(--amber); text-transform: uppercase; }
+  .ap-status::before { content: ""; width: 5px; height: 5px; border-radius: 50%; background: var(--amber); box-shadow: 0 0 9px rgba(255,190,107,0.7); }
+  .ap-title { margin-top: 9px; font-family: "Bahnschrift", "Segoe UI", sans-serif; font-size: 21px; font-weight: 600; letter-spacing: -0.01em; color: #f0ece4; }
+  .ap-sub { margin-top: 6px; font-size: 12px; line-height: 1.5; color: #8d99ac; }
+  .ap-meta { margin-top: 11px; padding-top: 10px; border-top: 1px solid rgba(255,255,255,0.06); display: flex; gap: 14px; font-family: var(--mono); font-size: 8.5px; letter-spacing: 0.08em; color: #6d7b91; }
+  .ap-meta b { color: #a7b3c6; font-weight: 500; }
+
+  .stamp {
+    position: absolute; right: 86px; top: 700px; width: 92px; height: 92px; border-radius: 50%;
+    border: 1px solid rgba(70,215,201,0.22); display: grid; place-content: center; text-align: center;
+    font-family: var(--mono); font-size: 7.5px; letter-spacing: 0.16em; color: #6ea79f; text-transform: uppercase;
+    background: radial-gradient(circle, rgba(70,215,201,0.05), transparent 70%);
+  }
+  .stamp b { display: block; font-family: "Bahnschrift", sans-serif; font-size: 17px; letter-spacing: 0.02em; color: #a9d8d2; margin-bottom: 2px; }
+</style>
+</head>
+<body>
+  <div class="frame"></div>
+  <div class="corner tl"></div>
+  <div class="corner br"></div>
+
+  <div class="brand">
+    <svg class="mark" viewBox="0 0 56 56" aria-hidden="true">
+      <defs>
+        <linearGradient id="mg" x1="7" y1="3" x2="49" y2="53" gradientUnits="userSpaceOnUse">
+          <stop stop-color="#a99dff"/><stop offset="0.55" stop-color="#8b7cff"/><stop offset="1" stop-color="#46d7c9"/>
+        </linearGradient>
+      </defs>
+      <path d="M28 2.8 49.2 14.9v26.2L28 53.2 6.8 41.1V14.9Z" fill="#0b111d" stroke="url(#mg)" stroke-width="1.5"/>
+      <path d="M20.5 16.5v18.8h14.2" fill="none" stroke="#f2f5fa" stroke-width="4" stroke-linecap="square"/>
+      <circle cx="38.6" cy="17.4" r="2.7" fill="#ffbe6b"/>
+    </svg>
+    <div>
+      <div class="brand-name">LUNIK UI FORGE</div>
+      <div class="brand-sub">Browser-verified UI engineering</div>
+    </div>
+  </div>
+
+  <div class="copy">
+    <div class="eyebrow">Verification, not vibes</div>
+    <h1>Design the interface.<br><span class="grad">Prove it in the browser.</span></h1>
+    <p class="lede">Ten automated checks against a real Chromium page — accessibility, contrast, overflow, links, interactions and visual drift. Baselines are written only after a <strong>human approves the exact bytes</strong>.</p>
+    <div class="pills">
+      <div class="pill"><span class="dot"></span>10 automated checks</div>
+      <div class="pill"><span class="dot violet"></span>Real Chromium</div>
+      <div class="pill"><span class="dot amber"></span>Human-approved baselines</div>
+    </div>
+  </div>
+
+  <div class="browser">
+    <div class="chrome">
+      <div class="traf"><i></i><i></i><i></i></div>
+      <div class="url"><span class="lock"></span>127.0.0.1:4173 / examples / saas-dashboard</div>
+      <div class="chrome-tools"><i></i><i></i><i></i></div>
+    </div>
+    <div class="app">
+      <div class="app-side">
+        <div class="mini-brand"><i></i><span></span></div>
+        <div class="navrow active"><i></i><span></span></div>
+        <div class="navrow"><i></i><span></span></div>
+        <div class="navrow"><i></i><span></span></div>
+        <div class="navrow"><i></i><span></span></div>
+        <div class="side-note"><i></i><i></i><i></i></div>
+      </div>
+      <div class="app-main">
+        <div class="app-head"><div><div class="t"></div><div class="s"></div></div><div class="search"></div></div>
+        <div class="metric-row">
+          <div class="metric"><div class="l"></div><div class="v"></div><div class="d"></div></div>
+          <div class="metric"><div class="l"></div><div class="v"></div><div class="d"></div></div>
+          <div class="metric"><div class="l"></div><div class="v"></div><div class="d"></div></div>
+          <div class="metric"><div class="l"></div><div class="v"></div><div class="d" style="background:#3b465a"></div></div>
+        </div>
+        <div class="chart">
+          <div class="grid"></div>
+          <div class="cap"></div>
+          <svg viewBox="0 0 560 176" preserveAspectRatio="none" aria-hidden="true">
+            <defs>
+              <linearGradient id="area" x1="0" y1="0" x2="0" y2="1">
+                <stop stop-color="#8b7cff" stop-opacity="0.30"/><stop offset="1" stop-color="#8b7cff" stop-opacity="0"/>
+              </linearGradient>
+            </defs>
+            <path d="M0 138 L56 128 L112 132 L168 116 L224 119 L280 103 L336 108 L392 88 L448 74 L504 60 L560 40 L560 176 L0 176 Z" fill="url(#area)"/>
+            <path d="M0 138 L56 128 L112 132 L168 116 L224 119 L280 103 L336 108 L392 88 L448 74 L504 60 L560 40" fill="none" stroke="#9b8fff" stroke-width="2"/>
+          </svg>
+        </div>
+        <div class="table">
+          <div class="trow"><span class="b a"></span><span class="b b"></span><span class="badge"></span><span class="b c"></span></div>
+          <div class="trow"><span class="b a"></span><span class="b b"></span><span class="badge"></span><span class="b c"></span></div>
+          <div class="trow"><span class="b a"></span><span class="b b"></span><span class="badge"></span><span class="b c"></span></div>
+        </div>
+      </div>
+      <div class="bounds"></div>
+      <div class="cross"></div>
+      <div class="scan"></div>
+      <div class="ruler"><span>1440</span><span>834</span><span>390</span></div>
+    </div>
+  </div>
+
+  <div class="check-panel">
+    <div class="cp-head"><span>Browser audit</span><b>10 checks</b></div>
+    <div class="cp-row"><span>console</span><span class="st">clear</span></div>
+    <div class="cp-row"><span>network</span><span class="st">clear</span></div>
+    <div class="cp-row"><span>overflow</span><span class="st">clear</span></div>
+    <div class="cp-row"><span>a11y names</span><span class="st">clear</span></div>
+    <div class="cp-row"><span>labels</span><span class="st">clear</span></div>
+    <div class="cp-row"><span>contrast</span><span class="st warn">review</span></div>
+    <div class="cp-row"><span>links</span><span class="st">clear</span></div>
+    <div class="cp-row"><span>elements</span><span class="st">clear</span></div>
+    <div class="cp-row"><span>interactions</span><span class="st">clear</span></div>
+    <div class="cp-row"><span>visual</span><span class="st skip">baseline</span></div>
+  </div>
+
+  <div class="approval">
+    <div class="ap-top"><span>Visual baseline</span><span class="ap-status">Awaiting human review</span></div>
+    <div class="ap-title">The tool never approves its own pixels.</div>
+    <div class="ap-sub">Capture, inspect, dry-run, then confirm a specific SHA-256. Only then is a baseline written.</div>
+    <div class="ap-meta"><span>RUN ID <b>required</b></span><span>HASH <b>pinned</b></span><span>WRITE <b>explicit</b></span></div>
+  </div>
+
+  <div class="stamp"><b>10</b>checks<br>real DOM</div>
+
+  <div class="flow"><b>config</b><span class="arrow">→</span><b>page × viewport</b><span class="arrow">→</span><b>verify</b><span class="arrow">→</span><b>review</b><span class="arrow">→</span><b>approve</b></div>
+  <div class="legal">MIT · Node ≥ 20.11 · local only · no telemetry</div>
+</body>
+</html>

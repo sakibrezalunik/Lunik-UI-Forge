@@ -1,0 +1,1199 @@
+/* Sentinel sample dashboard
+   Direction: dark operations console. High information density, severity always
+   carries a text label, colour never the sole signal. */
+
+:root {
+  --color-bg: #0a0f16;
+  --color-surface: #111823;
+  --color-surface-muted: #172130;
+  --color-border: #263141;
+  --color-border-strong: #4d5a6d;
+  --color-text: #e9eef6;
+  --color-text-muted: #a9b5c7;
+  --color-accent: #8ab0ff;
+  --color-accent-text: #0a1220;
+  --color-focus: #ffd166;
+
+  --sidebar-bg: #080d14;
+  --sidebar-bg-raised: #111b29;
+  --sidebar-text: #eef3fa;
+  --sidebar-muted: #a8b5c7;
+  --sidebar-subtle: #8494a9;
+  --sidebar-border: #202b3b;
+
+  --sev-critical: #ffb9b9;
+  --sev-critical-bg: #3d1f28;
+  --sev-high: #ffd79a;
+  --sev-high-bg: #3a2c12;
+  --sev-medium: #a8d4ff;
+  --sev-medium-bg: #14304a;
+  --sev-low: #cfd8e6;
+  --sev-low-bg: #232c3a;
+
+  --radius-sm: 6px;
+  --radius-md: 10px;
+  --radius-lg: 14px;
+
+  --space-1: 4px;
+  --space-2: 8px;
+  --space-3: 12px;
+  --space-4: 16px;
+  --space-5: 24px;
+  --space-6: 32px;
+
+  --font-sans: system-ui, -apple-system, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+  --font-mono: ui-monospace, SFMono-Regular, Menlo, Consolas, "Liberation Mono", monospace;
+}
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+/* An author `display` value beats the UA rule for [hidden]; restore it so the
+   attribute actually hides elements. */
+[hidden] {
+  display: none !important;
+}
+
+body {
+  margin: 0;
+  background: var(--color-bg);
+  color: var(--color-text);
+  font-family: var(--font-sans);
+  font-size: 15px;
+  line-height: 1.5;
+}
+
+h1,
+h2 {
+  margin: 0;
+  line-height: 1.25;
+  letter-spacing: -0.01em;
+}
+
+h1 {
+  font-size: 1.6875rem;
+}
+
+h2 {
+  font-size: 1rem;
+}
+
+p {
+  margin: 0;
+}
+
+:focus-visible {
+  outline: 3px solid var(--color-focus);
+  outline-offset: 2px;
+  border-radius: var(--radius-sm);
+}
+
+.visually-hidden {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  margin: -1px;
+  padding: 0;
+  overflow: hidden;
+  clip: rect(0 0 0 0);
+  clip-path: inset(50%);
+  white-space: nowrap;
+  border: 0;
+}
+
+.skip-link {
+  position: absolute;
+  left: var(--space-4);
+  top: -100px;
+  z-index: 10;
+  padding: var(--space-2) var(--space-4);
+  background: var(--color-accent);
+  color: var(--color-accent-text);
+  border-radius: var(--radius-sm);
+  font-weight: 700;
+  text-decoration: none;
+}
+
+.skip-link:focus {
+  top: var(--space-4);
+}
+
+/* ---------- shell ---------- */
+
+.shell {
+  display: grid;
+  grid-template-columns: 15rem minmax(0, 1fr);
+  min-height: 100vh;
+}
+
+.shell > * {
+  min-width: 0;
+}
+
+.sidebar {
+  position: sticky;
+  top: 0;
+  align-self: start;
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-5);
+  height: 100vh;
+  overflow-y: auto;
+  padding: var(--space-5) var(--space-4);
+  background: var(--sidebar-bg);
+  border-right: 1px solid var(--sidebar-border);
+  color: var(--sidebar-text);
+}
+
+.brand {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+  padding: 0 var(--space-2);
+  font-weight: 700;
+}
+
+.brand-mark {
+  display: grid;
+  place-items: center;
+  flex: none;
+  width: 2.25rem;
+  height: 2.25rem;
+  border-radius: 9px;
+  background: var(--color-accent);
+  color: var(--color-accent-text);
+  font-size: 1rem;
+  font-weight: 700;
+  box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.2);
+}
+
+.brand-copy {
+  display: grid;
+  gap: 1px;
+  min-width: 0;
+}
+
+.brand-name {
+  color: var(--sidebar-text);
+  font-size: 1.0625rem;
+  letter-spacing: 0.01em;
+}
+
+.brand-meta {
+  color: var(--sidebar-subtle);
+  font-size: 0.6875rem;
+  font-weight: 600;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+}
+
+.nav {
+  display: grid;
+  gap: var(--space-2);
+}
+
+.nav-label {
+  padding: 0 var(--space-3);
+  color: var(--sidebar-subtle);
+  font-size: 0.6875rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.nav ul {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.nav-link {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  padding: var(--space-2) var(--space-3);
+  border-radius: var(--radius-sm);
+  color: var(--sidebar-muted);
+  text-decoration: none;
+  font-size: 0.875rem;
+  font-weight: 600;
+}
+
+.nav-icon {
+  display: grid;
+  place-items: center;
+  flex: none;
+  width: 1.0625rem;
+  height: 1.0625rem;
+  color: currentColor;
+  opacity: 0.9;
+}
+
+.nav-icon svg {
+  width: 100%;
+  height: 100%;
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 1.5;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+.nav-link:hover {
+  background: rgba(255, 255, 255, 0.05);
+  color: var(--sidebar-text);
+}
+
+.nav-link[aria-current="page"] {
+  background: var(--sidebar-bg-raised);
+  color: #ffffff;
+  box-shadow: inset 2px 0 0 var(--color-accent);
+}
+
+.sidebar :focus-visible {
+  outline-color: #ffd166;
+}
+
+.sidebar-note {
+  /* In normal flow directly under the nav, then pushed to the bottom of the
+     sticky rail. It stays readable in the first screen at every width. */
+  margin-top: auto;
+  padding-top: var(--space-4);
+  border-top: 1px solid var(--sidebar-border);
+  color: var(--sidebar-muted);
+  font-size: 0.75rem;
+  line-height: 1.5;
+}
+
+.content {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-5);
+  padding: var(--space-5) var(--space-5) var(--space-6);
+  width: 100%;
+  max-width: 92rem;
+}
+
+.topbar {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: var(--space-4);
+}
+
+.page-subtitle {
+  margin-top: var(--space-1);
+  color: var(--color-text-muted);
+  font-size: 0.75rem;
+  font-variant-numeric: tabular-nums;
+}
+
+.eyebrow {
+  color: var(--color-text-muted);
+  font-size: 0.75rem;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+}
+
+.topbar-actions {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-end;
+  gap: var(--space-3);
+}
+
+.field {
+  display: grid;
+  gap: var(--space-1);
+  min-width: 13rem;
+}
+
+.field-label {
+  font-size: 0.75rem;
+  font-weight: 700;
+  color: var(--color-text-muted);
+}
+
+.input {
+  padding: var(--space-2) var(--space-3);
+  border: 1px solid var(--color-border-strong);
+  border-radius: var(--radius-sm);
+  background: var(--color-surface);
+  color: var(--color-text);
+  font: inherit;
+  font-size: 0.875rem;
+}
+
+.button {
+  padding: var(--space-2) var(--space-4);
+  border-radius: var(--radius-sm);
+  border: 1px solid transparent;
+  font: inherit;
+  font-size: 0.875rem;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.button-secondary {
+  background: var(--color-surface-muted);
+  border-color: var(--color-border-strong);
+  color: var(--color-text);
+}
+
+.button-secondary:hover {
+  background: #222b3b;
+}
+
+.button-ghost {
+  background: transparent;
+  border-color: var(--color-border-strong);
+  color: var(--color-text);
+  padding: var(--space-1) var(--space-3);
+  font-size: 0.8125rem;
+}
+
+.button-ghost:hover {
+  border-color: var(--color-accent);
+  color: var(--color-accent);
+  background: rgba(138, 176, 255, 0.06);
+}
+
+.button-ghost:disabled {
+  color: var(--color-text-muted);
+  border-style: dashed;
+  cursor: default;
+}
+
+/* ---------- posture banner ---------- */
+
+.banner {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  gap: var(--space-5);
+  align-items: center;
+  padding: var(--space-4) var(--space-5);
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-left: 4px solid var(--sev-high);
+  border-radius: var(--radius-md);
+}
+
+.banner-main {
+  display: grid;
+  gap: var(--space-2);
+}
+
+.banner-label {
+  color: var(--color-text-muted);
+  font-size: 0.75rem;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+}
+
+.banner-value {
+  display: flex;
+  align-items: flex-start;
+  gap: var(--space-2);
+  font-size: 1.0625rem;
+  font-weight: 700;
+}
+
+.banner-detail {
+  color: var(--color-text-muted);
+  font-size: 0.875rem;
+  max-width: 72ch;
+}
+
+.banner-facts {
+  display: grid;
+  grid-auto-flow: column;
+  grid-auto-columns: minmax(5.5rem, auto);
+  margin: 0;
+  border-left: 1px solid var(--color-border);
+}
+
+.banner-fact {
+  display: grid;
+  gap: 2px;
+  padding: 0 var(--space-4);
+  border-right: 1px solid var(--color-border);
+}
+
+.banner-fact:last-child {
+  border-right: 0;
+  padding-right: 0;
+}
+
+.banner-fact dt {
+  color: var(--color-text-muted);
+  font-size: 0.6875rem;
+  font-weight: 700;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  white-space: nowrap;
+}
+
+.banner-fact dd {
+  margin: 0;
+  font-size: 1.0625rem;
+  font-weight: 700;
+  font-variant-numeric: tabular-nums;
+}
+
+.severity-dot {
+  flex: none;
+  width: 0.625rem;
+  height: 0.625rem;
+  margin-top: 7px;
+  border-radius: 50%;
+  display: inline-block;
+}
+
+.severity-dot-high {
+  background: var(--sev-high);
+}
+
+/* ---------- metrics ---------- */
+
+.metric-grid {
+  display: grid;
+  /* Explicit 4 / 2 / 1 counts instead of auto-fit. With a 12.5rem track,
+     auto-fit fitted three columns at 768–1100px, orphaning the fourth card on a
+     row of its own. Fixed counts cannot orphan. */
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: var(--space-3);
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.card {
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-lg);
+  padding: var(--space-4);
+}
+
+.metric {
+  display: grid;
+  gap: var(--space-1);
+  align-content: start;
+}
+
+.metric-label {
+  color: var(--color-text-muted);
+  font-size: 0.75rem;
+  font-weight: 700;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+}
+
+.metric-value {
+  font-size: 1.75rem;
+  font-weight: 700;
+  font-variant-numeric: tabular-nums;
+  letter-spacing: -0.02em;
+}
+
+.metric-meta {
+  color: var(--color-text-muted);
+  font-size: 0.8125rem;
+}
+
+.delta-up {
+  color: var(--sev-high);
+  font-weight: 700;
+}
+
+.delta-down {
+  color: #9fe3b4;
+  font-weight: 700;
+}
+
+/* ---------- cards ---------- */
+
+.card-header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: var(--space-4);
+  margin-bottom: var(--space-4);
+}
+
+.card-header-wrap {
+  flex-wrap: wrap;
+}
+
+.card-subtitle {
+  margin-top: var(--space-1);
+  color: var(--color-text-muted);
+  font-size: 0.8125rem;
+}
+
+.filter-group {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-2);
+}
+
+.chip {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-2);
+  min-height: 2rem;
+  padding: var(--space-1) var(--space-3);
+  border-radius: 999px;
+  border: 1px solid var(--color-border-strong);
+  background: transparent;
+  color: var(--color-text);
+  font: inherit;
+  font-size: 0.8125rem;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.chip:hover {
+  background: var(--color-surface-muted);
+}
+
+.chip.is-active {
+  background: var(--color-accent);
+  border-color: var(--color-accent);
+  color: var(--color-accent-text);
+}
+
+.chip-count {
+  min-width: 1.125rem;
+  padding: 0 5px;
+  border-radius: 999px;
+  background: var(--color-surface-muted);
+  color: var(--color-text-muted);
+  font-size: 0.6875rem;
+  font-variant-numeric: tabular-nums;
+  line-height: 1.45;
+  text-align: center;
+}
+
+.chip.is-active .chip-count {
+  background: rgba(10, 18, 32, 0.22);
+  color: var(--color-accent-text);
+}
+
+/* ---------- table ---------- */
+
+.table-frame {
+  position: relative;
+}
+
+/* A soft surface fade at the scroll edge. This is deliberately not the
+   affordance — the labelled cue above the table is — because a dark veil on
+   this surface cannot reach the 3:1 non-text floor. It only stops a partially
+   clipped control from reading as a broken button: the edge fades into the card
+   surface while content continues underneath, and disappears at the rightmost
+   position so the last column is never dimmed. pointer-events: none keeps it
+   out of the way of the table and the scroll box's focus ring. */
+.table-edge {
+  position: absolute;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  width: 2.5rem;
+  background: linear-gradient(to right, rgba(17, 24, 35, 0), var(--color-surface) 35%);
+  opacity: 0;
+  pointer-events: none;
+}
+
+.table-edge[data-visible="true"] {
+  opacity: 1;
+}
+
+.table-wrap {
+  /* position: relative keeps absolutely positioned descendants (for example a
+     .visually-hidden label inside a cell) inside this scroll box. Without it
+     they anchor to the viewport and the whole page scrolls sideways. */
+  position: relative;
+  /* The table overflows this box at most widths: it is wider than the scrollport
+     across 1024–1185px and again below about 905px, and it fits only in the
+     pocket between those ranges and above 1185px. */
+  overflow-x: auto;
+  /* The wrapper is focusable (tabindex="0" in index.html) so keyboard users can
+     scroll it; the global :focus-visible rule supplies a visible ring, which
+     matters because the box is otherwise easy to mistake for static content. */
+}
+
+/* Horizontal-overflow cue.
+
+   What did not work, and why — both are measured, not assumed:
+
+   - A scrollbar cannot carry this. Chromium in the pinned Playwright build
+     (156.0.8078.4) uses overlay scrollbars here: `offsetHeight - clientHeight`
+     is 0 at every width and the element renders pixel-identically with and
+     without a styled `.table-wrap::-webkit-scrollbar`. Nothing is painted until
+     the user already knows to scroll.
+   - The Phase 15 two-layer edge gradient cannot carry it either. Darkening
+     --color-surface (#131922) can reach at most 1.19:1 against pure black, so
+     the veil peaked at 1.14:1 — far under the 3:1 WCAG 1.4.11 floor for
+     non-text cues. Worse, the `local` attachment layer that hides the shadow at
+     the rightmost position is 64px wide, so it also hid the shadow whenever
+     less than 64px of the table was still off screen: the cue went blind for
+     every small overflow (measured: 30px hidden, cue peak 10 instead of 22).
+
+   So the cue is an explicit label instead of a barely detectable gradient, and
+   its visibility follows the real scroll state (app.js sets `data-visible` from
+   scrollWidth/clientWidth/scrollLeft):
+
+     content hidden to the right   → shown
+     rightmost position            → hidden
+     scrolled back towards 0       → shown again
+     table fits the box            → hidden, so no hidden content is implied
+     any overflow, including 1px   → shown
+
+   Placement is part of the cue: it sits directly *above* the scroll box, so it
+   is on screen whenever the table's first rows are. Below an eight-row table it
+   would be under the fold at a 900px-high viewport, which is where a user who
+   has not yet discovered the overflow would look last.
+
+   The label is a sibling of the scroll box, not a child, so it never scrolls or
+   covers the table; it keeps its line box while hidden (visibility, not
+   display) so appearing and disappearing never shift the table under the
+   pointer; it is `pointer-events: none` so it cannot intercept pointer or touch
+   input; and it sits in normal flow outside the scroll box, so it cannot shadow
+   the keyboard focus ring or the focus order. It carries no motion, so there is
+   nothing to disable under `prefers-reduced-motion`.
+
+   `aria-hidden` on purpose: the scroll box is already a named region
+   ("Scrollable security alerts table"), which is the durable, screen-reader
+   facing statement of the same fact. Announcing a toggling visual nudge as well
+   would be noise, not information. */
+.table-scroll-hint {
+  display: flex;
+  min-height: 1.375rem;
+  align-items: center;
+  justify-content: flex-end;
+  gap: var(--space-2);
+  margin-bottom: var(--space-2);
+  color: var(--color-accent);
+  font-size: 0.8125rem;
+  font-weight: 600;
+  line-height: 1.5;
+  pointer-events: none;
+  visibility: hidden;
+}
+
+.table-scroll-hint[data-visible='true'] {
+  visibility: visible;
+}
+
+.table-scroll-hint-arrow {
+  font-size: 1rem;
+  line-height: 1;
+}
+
+.table {
+  width: 100%;
+  /* Wide enough that every column keeps its content on one line — the longest
+     alert title needs 261px and the longest meta line 304px — so the wrapper
+     genuinely scrolls at tablet width instead of crushing the asset column and
+     breaking `edge-gateway-01` in the middle. 54rem clears the 860px the table
+     needs when identifiers and timestamps are kept unbroken. */
+  min-width: 54rem;
+  border-collapse: collapse;
+  font-size: 0.875rem;
+}
+
+.table th,
+.table td {
+  padding: var(--space-3);
+  text-align: left;
+  border-bottom: 1px solid var(--color-border);
+  vertical-align: middle;
+}
+
+.table thead th {
+  color: var(--color-text-muted);
+  font-size: 0.6875rem;
+  font-weight: 700;
+  letter-spacing: 0.07em;
+  text-transform: uppercase;
+}
+
+.table tbody tr:last-child td {
+  border-bottom: none;
+}
+
+.table tbody tr:hover {
+  background: rgba(255, 255, 255, 0.022);
+}
+
+.table tbody tr.is-acknowledged {
+  background: rgba(52, 211, 153, 0.035);
+}
+
+.table tbody tr.is-acknowledged:hover {
+  background: rgba(52, 211, 153, 0.06);
+}
+
+.alert-name {
+  font-weight: 600;
+}
+
+.alert-meta {
+  display: block;
+  color: var(--color-text-muted);
+  font-size: 0.8125rem;
+}
+
+.mono {
+  font-family: var(--font-mono);
+  font-size: 0.8125rem;
+  /* Host identifiers and timestamps are single tokens: wrapping them mid-word
+     turns `edge-gateway-01` into `edge-` / `gateway-01`. */
+  white-space: nowrap;
+}
+
+.badge {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-1);
+  padding: 2px var(--space-2);
+  border-radius: 999px;
+  font-size: 0.6875rem;
+  font-weight: 700;
+  letter-spacing: 0.03em;
+  text-transform: uppercase;
+  white-space: nowrap;
+}
+
+.badge-critical {
+  background: var(--sev-critical-bg);
+  color: var(--sev-critical);
+}
+
+.badge-high {
+  background: var(--sev-high-bg);
+  color: var(--sev-high);
+}
+
+.badge-medium {
+  background: var(--sev-medium-bg);
+  color: var(--sev-medium);
+}
+
+.badge-low {
+  background: var(--sev-low-bg);
+  color: var(--sev-low);
+}
+
+.state-pill {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  font-size: 0.8125rem;
+  color: var(--color-text-muted);
+  white-space: nowrap;
+}
+
+/* The dot sits in the cell's existing left padding rather than in the text
+   flow. An inline dot plus gap cost 12px, which made the two longest alert
+   titles wrap at tablet width and pushed their rows out of line. */
+.state-dot {
+  position: absolute;
+  left: -10px;
+  top: 50%;
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: currentColor;
+  transform: translateY(-50%);
+}
+
+.state-pill.is-investigating {
+  color: var(--sev-high);
+}
+
+.state-pill.is-quarantined {
+  color: var(--sev-medium);
+}
+
+.state-pill.is-ack {
+  color: #9fe3b4;
+  font-weight: 600;
+}
+
+.state-block {
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr) auto;
+  gap: var(--space-4) var(--space-5);
+  align-items: center;
+  justify-items: start;
+  padding: var(--space-5);
+  margin-top: var(--space-4);
+  border: 1px dashed var(--color-border-strong);
+  border-radius: var(--radius-md);
+}
+
+.state-icon {
+  display: grid;
+  place-items: center;
+  width: 2.25rem;
+  height: 2.25rem;
+  border-radius: 50%;
+  background: var(--color-surface-muted);
+  color: var(--sev-high);
+}
+
+.state-copy {
+  display: grid;
+  gap: 2px;
+  min-width: 0;
+}
+
+.state-icon svg {
+  width: 1.125rem;
+  height: 1.125rem;
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 1.5;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+.state-title {
+  font-weight: 700;
+}
+
+.state-body {
+  color: var(--color-text-muted);
+  font-size: 0.875rem;
+  max-width: 56ch;
+}
+
+/* ---------- split panels ---------- */
+
+.split {
+  display: grid;
+  grid-template-columns: minmax(0, 1.4fr) minmax(0, 1fr);
+  gap: var(--space-4);
+  align-items: start;
+}
+
+.timeline {
+  display: grid;
+  gap: var(--space-3);
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.timeline-item {
+  position: relative;
+  display: grid;
+  grid-template-columns: 0.5rem 5.25rem minmax(0, 1fr);
+  gap: var(--space-3);
+  padding-bottom: var(--space-3);
+  border-bottom: 1px solid var(--color-border);
+}
+
+.timeline-item:last-child {
+  padding-bottom: 0;
+  border-bottom: none;
+}
+
+.timeline-marker {
+  position: relative;
+  z-index: 1;
+  width: 7px;
+  height: 7px;
+  margin-top: 5px;
+  border-radius: 50%;
+  background: var(--color-accent);
+  box-shadow: 0 0 0 3px rgba(138, 176, 255, 0.12);
+}
+
+.timeline-item:not(:last-child) .timeline-marker::after {
+  content: "";
+  position: absolute;
+  left: 3px;
+  top: 10px;
+  bottom: calc(-1 * var(--space-3) - 8px);
+  width: 1px;
+  background: var(--color-border);
+}
+
+.timeline-time {
+  color: var(--color-text-muted);
+  font-family: var(--font-mono);
+  font-size: 0.75rem;
+  padding-top: 2px;
+}
+
+.timeline-title {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--space-2);
+  font-size: 0.875rem;
+  font-weight: 600;
+}
+
+.timeline-detail {
+  margin-top: var(--space-1);
+  color: var(--color-text-muted);
+  font-size: 0.8125rem;
+}
+
+/* ---------- asset meters ---------- */
+
+.asset-list {
+  display: grid;
+  gap: var(--space-4);
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.asset-row {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: var(--space-3);
+  margin-bottom: var(--space-2);
+}
+
+.asset-name {
+  font-size: 0.875rem;
+  font-weight: 600;
+}
+
+.asset-value {
+  font-size: 0.8125rem;
+  font-variant-numeric: tabular-nums;
+  color: var(--color-text-muted);
+}
+
+.meter {
+  position: relative;
+  height: 0.5rem;
+  border-radius: 999px;
+  background: var(--color-surface-muted);
+  overflow: hidden;
+}
+
+.meter-fill {
+  display: block;
+  height: 100%;
+  border-radius: 999px;
+  background: var(--color-accent);
+}
+
+.meter-target {
+  position: absolute;
+  top: -1px;
+  bottom: -1px;
+  left: 80%;
+  width: 1px;
+  background: var(--color-text);
+  opacity: 0.65;
+}
+
+.meter-fill-warn {
+  background: var(--sev-high);
+}
+
+.asset-note {
+  margin-top: var(--space-4);
+  padding-top: var(--space-4);
+  border-top: 1px solid var(--color-border);
+  color: var(--color-text-muted);
+  font-size: 0.8125rem;
+}
+
+.footer {
+  color: var(--color-text-muted);
+  font-size: 0.75rem;
+  padding-top: var(--space-2);
+}
+
+/* ---------- responsive ---------- */
+
+/* Two-up until four-up fits its own content, matching the SaaS dashboard's
+   transition exactly so both examples step at the same width. Measured: at a
+   1200px viewport each card is 219px wide, so its content box is 169px against
+   the 150.1px the longest label ("Endpoints reporting") needs — the cyber
+   labels were never the binding constraint, but the two examples must not
+   disagree about when four columns are honest. */
+@media (max-width: 1219px) {
+  .metric-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+@media (max-width: 1199px) {
+  .split {
+    grid-template-columns: minmax(0, 1fr);
+  }
+}
+
+@media (max-width: 1023px) {
+  .shell {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .sidebar {
+    position: static;
+    height: auto;
+    overflow: visible;
+    border-right: none;
+    border-bottom: 1px solid var(--sidebar-border);
+    padding: var(--space-4);
+    gap: var(--space-3);
+  }
+
+  .brand {
+    padding: 0;
+  }
+
+  .nav {
+    gap: var(--space-1);
+  }
+
+  .nav-label {
+    display: none;
+  }
+
+  .nav ul {
+    flex-direction: row;
+    flex-wrap: wrap;
+    gap: var(--space-1);
+  }
+
+  .nav-icon {
+    display: none;
+  }
+
+  .sidebar-note {
+    margin-top: 0;
+    padding-top: var(--space-3);
+  }
+
+  .content {
+    padding: var(--space-4);
+  }
+}
+
+@media (max-width: 767px) {
+  h1 {
+    font-size: 1.375rem;
+  }
+
+  .topbar-actions {
+    width: 100%;
+  }
+
+  .field {
+    flex: 1 1 12rem;
+    min-width: 0;
+  }
+
+  .metric-grid {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .card {
+    padding: var(--space-3);
+  }
+
+  .banner {
+    grid-template-columns: minmax(0, 1fr);
+    gap: var(--space-4);
+    padding: var(--space-4);
+  }
+
+  .banner-facts {
+    grid-auto-flow: row;
+    grid-auto-columns: auto;
+    border-top: 1px solid var(--color-border);
+    border-left: 0;
+    padding-top: var(--space-1);
+  }
+
+  .banner-fact {
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+    gap: var(--space-3);
+    padding: var(--space-2) 0;
+    border-right: 0;
+    border-bottom: 1px solid var(--color-border);
+  }
+
+  .banner-fact:last-child {
+    padding-bottom: 0;
+    border-bottom: 0;
+  }
+
+  .banner-fact dt {
+    white-space: normal;
+  }
+
+  .timeline-item {
+    grid-template-columns: 0.5rem minmax(0, 1fr);
+    grid-template-areas:
+      "marker time"
+      "marker body";
+    row-gap: var(--space-1);
+    column-gap: var(--space-3);
+  }
+
+  .timeline-marker {
+    grid-area: marker;
+  }
+
+  .timeline-time {
+    grid-area: time;
+  }
+
+  .timeline-item > div {
+    grid-area: body;
+  }
+
+  .state-block {
+    grid-template-columns: auto minmax(0, 1fr);
+    grid-template-areas:
+      "icon copy"
+      "reset reset";
+    gap: var(--space-3) var(--space-4);
+  }
+
+  .state-icon {
+    grid-area: icon;
+    align-self: start;
+  }
+
+  .state-copy {
+    grid-area: copy;
+  }
+
+  .state-block .button {
+    grid-area: reset;
+    justify-self: start;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    transition-duration: 0.01ms !important;
+  }
+}

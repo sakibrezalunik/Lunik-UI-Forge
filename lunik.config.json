@@ -1,0 +1,121 @@
+{
+  "$comment": "Default verification config for Lunik UI Forge. Pages are served from the project root by a built-in static server; no external hosting is required.",
+  "viewports": [
+    { "name": "desktop", "width": 1440, "height": 900 },
+    { "name": "tablet", "width": 834, "height": 1112 },
+    { "name": "mobile", "width": 390, "height": 844 }
+  ],
+  "browser": {
+    "channel": null,
+    "headless": true,
+    "colorScheme": "light"
+  },
+  "reportsDir": "reports",
+  "baselinesDir": "baselines",
+  "checks": {
+    "console": { "enabled": true, "severity": "error" },
+    "network": { "enabled": true, "severity": "error", "ignore": ["/favicon.ico"] },
+    "overflow": { "enabled": true, "severity": "error", "tolerance": 1 },
+    "a11yNames": { "enabled": true, "severity": "error" },
+    "labels": { "enabled": true, "severity": "error" },
+    "contrast": {
+      "enabled": true,
+      "severity": "warning",
+      "minRatioNormal": 4.5,
+      "minRatioLarge": 3
+    },
+    "links": { "enabled": true, "severity": "error" },
+    "elements": { "enabled": true, "severity": "error" },
+    "interactions": { "enabled": true, "severity": "error" },
+    "visual": {
+      "enabled": true,
+      "severity": "error",
+      "maxDiffRatio": 0.001,
+      "pixelThreshold": 0.1
+    }
+  },
+  "pages": [
+    {
+      "id": "saas-dashboard",
+      "path": "/examples/saas-dashboard/index.html",
+      "design": "examples/saas-dashboard/DESIGN.md",
+      "expect": {
+        "selectors": [
+          { "selector": "h1", "text": "Revenue overview" },
+          "[data-metric='mrr']",
+          "[data-accounts-table]",
+          "#account-search",
+          "#main"
+        ]
+      },
+      "interactions": [
+        {
+          "name": "churned filter shows the empty state",
+          "steps": [
+            { "click": "[data-filter='churned']" },
+            { "expectVisible": "[data-empty-state]" },
+            { "expectText": "[data-result-count]", "contains": "0" }
+          ]
+        },
+        {
+          "name": "no-match search shows empty state, reset restores the table",
+          "steps": [
+            { "fill": "[data-search]", "value": "zzzz-no-match" },
+            { "expectVisible": "[data-empty-state]" },
+            { "click": "[data-action='reset-filters']" },
+            { "expectVisible": "[data-accounts-table]" },
+            { "expectCount": "[data-row]", "atLeast": 12 },
+            { "expectHidden": "[data-empty-state]" }
+          ]
+        },
+        {
+          "name": "search input is keyboard reachable and filterable",
+          "steps": [
+            { "focus": "[data-search]" },
+            { "expectFocus": "[data-search]" },
+            { "fill": "[data-search]", "value": "tailspin" },
+            { "expectCount": "[data-row]", "equals": 1 }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "cybersecurity-dashboard",
+      "path": "/examples/cybersecurity-dashboard/index.html",
+      "design": "examples/cybersecurity-dashboard/DESIGN.md",
+      "expect": {
+        "selectors": [
+          { "selector": "h1", "text": "Security operations" },
+          "[data-posture]",
+          ".metric-grid",
+          "[data-alert-table]",
+          "#alert-search"
+        ]
+      },
+      "interactions": [
+        {
+          "name": "critical severity filter narrows the queue to two alerts",
+          "steps": [
+            { "click": "[data-severity='critical']" },
+            { "expectCount": "[data-row]", "equals": 2 },
+            { "expectText": "[data-result-count]", "contains": "2" }
+          ]
+        },
+        {
+          "name": "acknowledging an alert updates its state",
+          "steps": [
+            { "click": "[data-action='acknowledge'][data-alert='ALT-2041']" },
+            { "expectText": "[data-state-cell='ALT-2041']", "contains": "Acknowledged" }
+          ]
+        },
+        {
+          "name": "search finds a host by name",
+          "steps": [
+            { "fill": "[data-search]", "value": "FS-014" },
+            { "expectCount": "[data-row]", "equals": 1 }
+          ]
+        }
+      ]
+    }
+  ]
+}

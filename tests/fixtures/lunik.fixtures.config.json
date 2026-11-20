@@ -1,0 +1,60 @@
+{
+  "viewports": [
+    { "name": "desktop", "width": 1440, "height": 900 },
+    { "name": "mobile", "width": 390, "height": 844 }
+  ],
+  "browser": { "colorScheme": "light" },
+  "checks": {
+    "visual": { "enabled": false }
+  },
+  "pages": [
+    {
+      "id": "fixture-pass",
+      "path": "/tests/fixtures/pass/index.html",
+      "expect": {
+        "selectors": [
+          { "selector": "h1", "text": "healthy page" },
+          "table",
+          "#query",
+          "[data-action='toggle']"
+        ]
+      },
+      "interactions": [
+        {
+          "name": "toggle reveals the detail region",
+          "steps": [
+            { "click": "[data-action='toggle']" },
+            { "expectVisible": "[data-region='detail']" },
+            { "expectText": "[data-action='toggle']", "contains": "Hide" },
+            { "expectHidden": "[data-region='nonexistent']" }
+          ]
+        },
+        {
+          "name": "keyboard can reach the search input",
+          "steps": [
+            { "focus": "#query" },
+            { "expectFocus": "#query" },
+            { "fill": "#query", "value": "alpha" },
+            { "expectText": "#query", "contains": "" }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "fixture-fail",
+      "path": "/tests/fixtures/fail/index.html",
+      "expect": {
+        "selectors": ["h1", "[data-metric-card]"]
+      },
+      "interactions": [
+        {
+          "name": "opening the panel reveals #panel",
+          "steps": [
+            { "click": "[data-action='open']" },
+            { "expectVisible": "#panel" }
+          ]
+        }
+      ]
+    }
+  ]
+}

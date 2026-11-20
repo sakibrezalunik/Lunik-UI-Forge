@@ -1,0 +1,53 @@
+{
+  "name": "lunik-ui-forge",
+  "version": "0.1.0",
+  "private": false,
+  "type": "module",
+  "description": "AI-agent-oriented UI engineering toolkit: design direction, implementation guidance, browser-based verification, and a controlled improvement loop.",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/sakibrezalunik/Lunik-UI-Forge.git"
+  },
+  "homepage": "https://github.com/sakibrezalunik/Lunik-UI-Forge#readme",
+  "bugs": {
+    "url": "https://github.com/sakibrezalunik/Lunik-UI-Forge/issues"
+  },
+  "engines": {
+    "node": ">=20.11.0"
+  },
+  "keywords": [
+    "ui",
+    "design-system",
+    "accessibility",
+    "visual-regression",
+    "playwright",
+    "ai-agent",
+    "ux"
+  ],
+  "files": [
+    "tools/",
+    "knowledge/",
+    "skills/",
+    "docs/",
+    "examples/",
+    "lunik.config.json",
+    "README.md",
+    "LICENSE",
+    "THIRD-PARTY-NOTICES.md"
+  ],
+  "scripts": {
+    "verify": "node tools/visual-verify.js",
+    "verify:strict": "node tools/visual-verify.js --strict",
+    "test": "node --test \"tests/unit/**/*.test.js\"",
+    "test:browser": "node --test \"tests/browser/**/*.test.js\"",
+    "test:all": "node --test \"tests/**/*.test.js\"",
+    "approve-baseline": "node tools/approve-baseline.js",
+    "serve": "node tools/serve.js"
+  },
+  "dependencies": {
+    "pixelmatch": "^8.0.0",
+    "playwright": "~1.64.0",
+    "pngjs": "^7.0.0"
+  }
+}

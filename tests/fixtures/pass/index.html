@@ -1,0 +1,101 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Fixture · healthy page</title>
+    <link rel="icon" href="data:," />
+    <style>
+      :root {
+        --ink: #16181d;
+        --muted: #4b5563;
+        --surface: #ffffff;
+        --line: #d7dbe2;
+        --accent: #1d4ed8;
+      }
+      * { box-sizing: border-box; }
+      body {
+        margin: 0;
+        font-family: system-ui, -apple-system, "Segoe UI", sans-serif;
+        color: var(--ink);
+        background: #f4f6f9;
+        line-height: 1.5;
+      }
+      .shell { max-width: 62rem; margin: 0 auto; padding: 2rem 1.25rem; }
+      header { display: flex; flex-wrap: wrap; gap: 1rem; align-items: center; justify-content: space-between; }
+      nav a { color: var(--accent); margin-right: 1rem; }
+      .card {
+        background: var(--surface);
+        border: 1px solid var(--line);
+        border-radius: 0.75rem;
+        padding: 1.25rem;
+        margin-block: 1.25rem;
+      }
+      .field { display: grid; gap: 0.35rem; max-width: 22rem; }
+      input { padding: 0.5rem; border: 1px solid var(--line); border-radius: 0.4rem; font: inherit; }
+      button {
+        font: inherit;
+        padding: 0.5rem 0.9rem;
+        border-radius: 0.4rem;
+        border: 1px solid var(--accent);
+        background: var(--accent);
+        color: #fff;
+        cursor: pointer;
+      }
+      button.secondary { background: #fff; color: var(--accent); }
+      :focus-visible { outline: 3px solid #b45309; outline-offset: 2px; }
+      table { width: 100%; border-collapse: collapse; }
+      th, td { text-align: left; padding: 0.5rem; border-bottom: 1px solid var(--line); }
+      .muted { color: var(--muted); }
+      [hidden] { display: none !important; }
+    </style>
+  </head>
+  <body>
+    <div class="shell">
+      <header>
+        <h1>Fixture: healthy page</h1>
+        <nav aria-label="Fixture navigation">
+          <a href="#details">Example section</a>
+          <a href="../fail/index.html">Broken fixture</a>
+        </nav>
+      </header>
+
+      <main id="main">
+        <section class="card" aria-labelledby="search-heading">
+          <h2 id="search-heading">Search</h2>
+          <div class="field">
+            <label for="query">Filter projects</label>
+            <input id="query" name="query" type="search" />
+          </div>
+        </section>
+
+        <section class="card" id="details" aria-labelledby="details-heading">
+          <h2 id="details-heading">Details</h2>
+          <p class="muted">Everything on this page is expected to pass every check.</p>
+          <button type="button" data-action="toggle">Show extra detail</button>
+          <p data-region="detail" hidden>Extra detail is now visible.</p>
+
+          <table>
+            <caption class="muted">Sample rows</caption>
+            <thead>
+              <tr><th scope="col">Name</th><th scope="col">Status</th></tr>
+            </thead>
+            <tbody>
+              <tr><td>Alpha</td><td>Active</td></tr>
+              <tr><td>Beta</td><td>Paused</td></tr>
+            </tbody>
+          </table>
+        </section>
+      </main>
+    </div>
+
+    <script>
+      const toggle = document.querySelector('[data-action="toggle"]');
+      toggle.addEventListener('click', () => {
+        const region = document.querySelector('[data-region="detail"]');
+        region.hidden = !region.hidden;
+        toggle.textContent = region.hidden ? 'Show extra detail' : 'Hide extra detail';
+      });
+    </script>
+  </body>
+</html>
